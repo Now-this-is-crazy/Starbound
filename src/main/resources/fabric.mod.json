@@ -3,14 +3,17 @@
 	"id": "starbound",
 	"version": "${version}",
 	"name": "Starbound",
-	"description": "",
+	"description": "A mod focused on adding new starry items and blocks.",
 	"authors": [
 		"Powercyphe",
-		"ShivAngel",
-		"NoxTurnaL_"
+		"ShivAngel"
 	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/starbound-mod",
+		"sources": "https://github.com/Now-this-is-crazy/Starbound"
+	},
 	"license": "MIT",
-	"icon": "assets/shnoxcyphe/icon.png",
+	"icon": "assets/starbound/icon.png",
 	"environment": "*",
 	"accessWidener": "starbound.accesswidener",
 	"entrypoints": {
@@ -40,6 +43,11 @@
 		"cardinal-components": [
 			"starbound:starry_objects",
 			"starbound:starry_invisibility"
-		]
+		],
+		"modmenu": {
+			"links": {
+				"modmenu.discord": "https://discord.gg/Dmp2dbyNrs"
+			}
+		}
 	}
 }
