@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "starbound:block/polished_starstone"
+    },
+    "lit=true": {
+      "model": "starbound:block/polished_starstone_lit"
+    }
+  }
+}

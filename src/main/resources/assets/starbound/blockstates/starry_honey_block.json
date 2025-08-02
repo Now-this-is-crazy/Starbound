@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "level=1": {
+      "model": "starbound:block/starry_honey_block_1"
+    },
+    "level=2": {
+      "model": "starbound:block/starry_honey_block_2"
+    },
+    "level=3": {
+      "model": "starbound:block/starry_honey_block_3"
+    }
+  }
+}

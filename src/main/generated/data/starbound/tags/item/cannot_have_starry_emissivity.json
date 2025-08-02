@@ -1,0 +1,7 @@
+{
+  "values": [
+    "minecraft:enchanted_book",
+    "minecraft:nether_star",
+    "#starbound:always_has_starry_emissivity"
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "starbound:block/starstone_tiles"
+    },
+    "lit=true": {
+      "model": "starbound:block/starstone_tiles_lit"
+    }
+  }
+}

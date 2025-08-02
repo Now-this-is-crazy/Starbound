@@ -1,0 +1,37 @@
+{
+  "required": true,
+  "package": "powercyphe.starbound.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "LivingEntityMixin",
+    "starry_gel.EntityMixin",
+    "starry_gel.LivingEntityMixin",
+    "starry_gel.PlayerEntityMixin",
+    "starry_goliath.PlayerEntityMixin",
+    "starry_goliath.ServerPlayerEntityMixin",
+    "starry_spyglass.PlayerEntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "accessor.EntityRendererAccessor",
+    "accessor.ItemModelManagerAccessor",
+    "client.EntityRendererMixin",
+    "client.EntityRenderStateMixin",
+    "client.MinecraftClientMixin",
+    "client.starry_emissivity.ArmorFeatureRendererMixin",
+    "client.starry_emissivity.ItemModelMixin",
+    "client.starry_emissivity.ItemRenderStateMixin",
+    "starry_gel.client.HeldItemRendererMixin",
+    "starry_gel.client.LivingEntityRendererMixin",
+    "starry_gel.client.ModelPartMixin",
+    "starry_gel.client.PlayerEntityRendererMixin",
+    "starry_goliath.client.BipedEntityModelMixin",
+    "starry_goliath.client.InGameHudMixin",
+    "starry_goliath.client.PlayerEntityRendererMixin",
+    "starry_spyglass.client.InGameHudMixin",
+    "starry_spyglass.client.LightmapTextureManagerMixin",
+    "starry_spyglass.client.PlayerHeldItemFeatureRendererMixin"
+  ]
+}

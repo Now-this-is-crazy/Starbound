@@ -1,0 +1,9 @@
+// 1.21.5	-999999999-01-01T00:00:00	Starbound/Tags for minecraft:block
+c7cb241a51d8f74357b5880637e038501cb8d0a6 data/minecraft/tags/block/fall_damage_resetting.json
+c2f8e5bc902b46d3318841feb998cc91e19a9877 data/minecraft/tags/block/mineable/hoe.json
+cbfd4e12b9fa44b388006f1546490b9ca064f7cb data/minecraft/tags/block/mineable/pickaxe.json
+c7cb241a51d8f74357b5880637e038501cb8d0a6 data/minecraft/tags/block/prevent_mob_spawning_inside.json
+ddbc6e21aac18715ab1081c8d86de6509296b3b9 data/minecraft/tags/block/slabs.json
+c9ab179b3416f23415a3f5cce8f3a698a17271a9 data/minecraft/tags/block/stairs.json
+84a73390b40f8bbfb9665531e61abb97a52a2583 data/minecraft/tags/block/walls.json
+636870b584527e1f8e6c843901a6921a4bd876cb data/starbound/tags/block/starstone_convertable.json

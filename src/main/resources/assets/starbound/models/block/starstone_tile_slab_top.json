@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab_top",
+  "textures": {
+    "bottom": "starbound:block/starstone_tiles",
+    "side": "starbound:block/starstone_tiles",
+    "top": "starbound:block/starstone_tiles"
+  }
+}

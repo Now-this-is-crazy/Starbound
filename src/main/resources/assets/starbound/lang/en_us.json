@@ -1,0 +1,71 @@
+{
+  "itemGroup.starbound": "Starbound",
+
+  "trim_material.starbound.starry": "Starry Material",
+
+  "tooltip.starbound.starry_gel_1": "Can be used to coat items and blocks,",
+  "tooltip.starbound.starry_gel_2": "making them emissive",
+  "tooltip.starbound.starry_emissivity": "Coated in Starry Gel",
+  "tooltip.starbound.starry_spyglass_1": "Allows users to see easier in the dark",
+  "tooltip.starbound.starry_spyglass_2": "and makes coated entities more visible",
+
+  "item.starbound.starry_gel": "Starry Gel",
+  "item.starbound.starry_ingot": "Starry Ingot",
+  "item.starbound.starry_spyglass": "Astral Telescope",
+  "item.starbound.starry_totem": "Starry Totem",
+  "item.starbound.starry_goliath": "Starry Goliath",
+
+  "item.starbound.starry_honey_block": "Starry Honey",
+  "item.starbound.starry_gel_block": "Block of Starry Gel",
+
+  "item.starbound.starstone": "Starstone",
+  "item.starbound.starstone_stairs": "Starstone Stairs",
+  "item.starbound.starstone_slab": "Starstone Slab",
+  "item.starbound.starstone_wall": "Starstone Wall",
+
+  "item.starbound.polished_starstone": "Polished Starstone",
+  "item.starbound.polished_starstone_stairs": "Polished Starstone Stairs",
+  "item.starbound.polished_starstone_slab": "Polished Starstone Slab",
+  "item.starbound.polished_starstone_wall": "Polished Starstone Wall",
+
+  "item.starbound.starstone_tiles": "Starstone Tiles",
+  "item.starbound.starstone_tile_stairs": "Starstone Tile Stairs",
+  "item.starbound.starstone_tile_slab": "Starstone Tile Slab",
+  "item.starbound.starstone_tile_wall": "Starstone Tile Wall",
+
+  "block.starbound.starry_honey_block": "Starry Honey",
+  "block.starbound.starry_gel_block": "Block of Starry Gel",
+  "block.starbound.starry_gel_layer": "Starry Gel",
+
+  "block.starbound.starstone": "Starstone",
+  "block.starbound.starstone_stairs": "Starstone Stairs",
+  "block.starbound.starstone_slab": "Starstone Slab",
+  "block.starbound.starstone_wall": "Starstone Wall",
+
+  "block.starbound.polished_starstone": "Polished Starstone",
+  "block.starbound.polished_starstone_stairs": "Polished Starstone Stairs",
+  "block.starbound.polished_starstone_slab": "Polished Starstone Slab",
+  "block.starbound.polished_starstone_wall": "Polished Starstone Wall",
+
+  "block.starbound.starstone_tiles": "Starstone Tiles",
+  "block.starbound.starstone_tile_stairs": "Starstone Tile Stairs",
+  "block.starbound.starstone_tile_slab": "Starstone Tile Slab",
+  "block.starbound.starstone_tile_wall": "Starstone Tile Wall",
+
+  "enchantment.starbound.flail": "Flail",
+  "enchantment.starbound.flail.desc": "Instead of creating shields, you now create shards that damage nearby enemies.",
+
+  "death.attack.starry_shard": "%1$s got torn apart",
+  "death.attack.starry_shard.player": "%1$s got torn apart by %2$s",
+  "death.attack.starry_shard.item": "%1$s got torn apart by %2$s using %3$s",
+
+  "subtitles.starbound.starry_shield.create": "Starry Shield formed",
+  "subtitles.starbound.starry_shield.break": "Starry Shield breaks",
+
+  "subtitles.starbound.starry_shard.create": "Starry Shard formed",
+  "subtitles.starbound.starry_shard.break": "Starry Shard breaks",
+
+  "subtitles.starbound.starry_object.charge": "Starry Goliath charges",
+
+  "subtitles.starbound.starry_gel_use": "Starry Gel used"
+}

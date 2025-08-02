@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "starbound:starry_ingot",
+    "T": "minecraft:totem_of_undying"
+  },
+  "pattern": [
+    "III",
+    "ITI",
+    "III"
+  ],
+  "result": {
+    "count": 1,
+    "id": "starbound:starry_totem"
+  }
+}

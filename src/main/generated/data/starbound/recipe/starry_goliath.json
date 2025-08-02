@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "starbound:starry_ingot",
+    "N": "minecraft:netherite_axe",
+    "S": "minecraft:stick"
+  },
+  "pattern": [
+    "II ",
+    "IN ",
+    "S  "
+  ],
+  "result": {
+    "count": 1,
+    "id": "starbound:starry_goliath"
+  }
+}

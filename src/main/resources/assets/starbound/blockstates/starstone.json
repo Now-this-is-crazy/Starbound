@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "starbound:block/starstone"
+    },
+    "lit=true": {
+      "model": "starbound:block/starstone_lit"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+	"credit": "Made with Blockbench",
+	"parent": "block/block",
+	"textures": {
+		"particle": "starbound:block/starry_gel_block",
+		"all": "starbound:block/starry_gel_block"
+	},
+	"elements": [
+		{
+			"from": [0, 0, 0],
+			"to": [16, 12, 16],
+			"faces": {
+				"north": {"uv": [0, 4, 16, 16], "texture": "#all", "cullface": "north"},
+				"east": {"uv": [0, 4, 16, 16], "texture": "#all", "cullface": "east"},
+				"south": {"uv": [0, 4, 16, 16], "texture": "#all", "cullface": "south"},
+				"west": {"uv": [0, 4, 16, 16], "texture": "#all", "cullface": "west"},
+				"up": {"uv": [0, 0, 16, 16], "texture": "#all"},
+				"down": {"uv": [0, 0, 16, 16], "texture": "#all", "cullface": "down"}
+			}
+		}
+	]
+}

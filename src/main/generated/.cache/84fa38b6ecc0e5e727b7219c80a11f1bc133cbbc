@@ -1,0 +1,4 @@
+// 1.21.5	-999999999-01-01T00:00:00	Starbound/Tags for minecraft:damage_type
+73106e513e2b083ca91f07348d524b3cb99cc485 data/minecraft/tags/damage_type/bypasses_armor.json
+73106e513e2b083ca91f07348d524b3cb99cc485 data/minecraft/tags/damage_type/bypasses_cooldown.json
+73106e513e2b083ca91f07348d524b3cb99cc485 data/minecraft/tags/damage_type/no_impact.json

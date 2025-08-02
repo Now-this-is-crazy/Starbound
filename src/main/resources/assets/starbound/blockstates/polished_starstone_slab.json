@@ -1,0 +1,24 @@
+{
+  "variants": {
+    "type=bottom,lit=false": {
+      "model": "starbound:block/polished_starstone_slab"
+    },
+    "type=double,lit=false": {
+      "model": "starbound:block/polished_starstone"
+    },
+    "type=top,lit=false": {
+      "model": "starbound:block/polished_starstone_slab_top"
+    },
+
+
+    "type=bottom,lit=true": {
+      "model": "starbound:block/polished_starstone_slab_lit"
+    },
+    "type=double,lit=true": {
+      "model": "starbound:block/polished_starstone_lit"
+    },
+    "type=top,lit=true": {
+      "model": "starbound:block/polished_starstone_slab_top_lit"
+    }
+  }
+}

@@ -1,0 +1,45 @@
+{
+	"schemaVersion": 1,
+	"id": "starbound",
+	"version": "${version}",
+	"name": "Starbound",
+	"description": "",
+	"authors": [
+		"Powercyphe",
+		"ShivAngel",
+		"NoxTurnaL_"
+	],
+	"license": "MIT",
+	"icon": "assets/shnoxcyphe/icon.png",
+	"environment": "*",
+	"accessWidener": "starbound.accesswidener",
+	"entrypoints": {
+		"main": [
+			"powercyphe.starbound.common.Starbound"
+		],
+		"client": [
+			"powercyphe.starbound.client.StarboundClient"
+		],
+		"fabric-datagen": [
+			"powercyphe.starbound.common.datagen.StarboundDataGenerator"
+		],
+		"cardinal-components": [
+			"powercyphe.starbound.common.registry.ModComponents"
+		]
+	},
+	"mixins": [
+		"starbound.mixins.json"
+	],
+	"depends": {
+		"fabricloader": "*",
+		"minecraft": ">=1.21.5",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"custom": {
+		"cardinal-components": [
+			"starbound:starry_objects",
+			"starbound:starry_invisibility"
+		]
+	}
+}

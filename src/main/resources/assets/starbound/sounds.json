@@ -1,0 +1,53 @@
+{
+  "starry_object.charge": {
+    "subtitle": "subtitles.starbound.starry_object.charge",
+    "sounds": [
+      "starbound:starry_object_charge"
+    ]
+  },
+
+  "starry_shield.create": {
+    "subtitle": "subtitles.starbound.starry_shield.create",
+    "sounds": [
+      "starbound:starry_shield_create"
+    ]
+  },
+  "starry_shield.break": {
+    "subtitle": "subtitles.starbound.starry_shield.break",
+    "sounds": [
+      "starbound:starry_shield_break"
+    ]
+  },
+
+  "starry_shard.create": {
+    "subtitle": "subtitles.starbound.starry_shard.create",
+    "sounds": [
+      "starbound:starry_shard_create"
+    ]
+  },
+  "starry_shard.break": {
+    "subtitle": "subtitles.starbound.starry_shard.break",
+    "sounds": [
+      "starbound:starry_shard_break"
+    ]
+  },
+
+  "block.starry_gel.step": {
+    "subtitle": "subtitles.block.generic.footsteps",
+    "sounds": [
+      "starbound:starry_gel/step1",
+      "starbound:starry_gel/step2",
+      "starbound:starry_gel/step3",
+      "starbound:starry_gel/step4"
+    ]
+  },
+
+  "item.starry_gel.use": {
+    "subtitle": "subtitles.starbound.starry_gel.use",
+    "sounds": [
+      "minecraft:item/honeycomb/wax_on1",
+      "minecraft:item/honeycomb/wax_on2",
+      "minecraft:item/honeycomb/wax_on3"
+    ]
+  }
+}

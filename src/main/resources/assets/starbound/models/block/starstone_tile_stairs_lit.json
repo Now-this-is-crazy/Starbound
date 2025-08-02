@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/stairs",
+  "textures": {
+    "bottom": "starbound:block/starstone_tiles_lit",
+    "side": "starbound:block/starstone_tiles_lit",
+    "top": "starbound:block/starstone_tiles_lit"
+  }
+}

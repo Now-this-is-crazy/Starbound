@@ -1,0 +1,196 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_post"
+      },
+      "when": {
+        "up": "true",
+        "lit": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side",
+        "uvlock": true
+      },
+      "when": {
+        "north": "low",
+        "lit": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side",
+        "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "low",
+        "lit": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side",
+        "uvlock": true,
+        "y": 180
+      },
+      "when": {
+        "south": "low",
+        "lit": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side",
+        "uvlock": true,
+        "y": 270
+      },
+      "when": {
+        "west": "low",
+        "lit": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_tall",
+        "uvlock": true
+      },
+      "when": {
+        "north": "tall",
+        "lit": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_tall",
+        "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "tall",
+        "lit": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_tall",
+        "uvlock": true,
+        "y": 180
+      },
+      "when": {
+        "south": "tall",
+        "lit": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_tall",
+        "uvlock": true,
+        "y": 270
+      },
+      "when": {
+        "west": "tall",
+        "lit": "false"
+      }
+    },
+
+
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_post_lit"
+      },
+      "when": {
+        "up": "true",
+        "lit": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_lit",
+        "uvlock": true
+      },
+      "when": {
+        "north": "low",
+        "lit": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_lit",
+        "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "low",
+        "lit": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_lit",
+        "uvlock": true,
+        "y": 180
+      },
+      "when": {
+        "south": "low",
+        "lit": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_lit",
+        "uvlock": true,
+        "y": 270
+      },
+      "when": {
+        "west": "low",
+        "lit": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_tall_lit",
+        "uvlock": true
+      },
+      "when": {
+        "north": "tall",
+        "lit": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_tall_lit",
+        "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "tall",
+        "lit": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_tall_lit",
+        "uvlock": true,
+        "y": 180
+      },
+      "when": {
+        "south": "tall",
+        "lit": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "starbound:block/starstone_tile_wall_side_tall_lit",
+        "uvlock": true,
+        "y": 270
+      },
+      "when": {
+        "west": "tall",
+        "lit": "true"
+      }
+    }
+  ]
+}

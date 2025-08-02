@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "starbound:starry_gel_block"
+  ],
+  "result": {
+    "count": 4,
+    "id": "starbound:starry_gel"
+  }
+}

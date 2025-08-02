@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/template_wall_side",
+  "textures": {
+    "wall": "starbound:block/starstone_tiles_lit"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "I": "starbound:starry_ingot",
+    "S": "minecraft:spyglass"
+  },
+  "pattern": [
+    " I ",
+    "ISI",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "starbound:starry_spyglass"
+  }
+}

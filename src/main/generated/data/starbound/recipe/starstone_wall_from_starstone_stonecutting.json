@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "starbound:starstone",
+  "result": {
+    "count": 1,
+    "id": "starbound:starstone_wall"
+  }
+}
