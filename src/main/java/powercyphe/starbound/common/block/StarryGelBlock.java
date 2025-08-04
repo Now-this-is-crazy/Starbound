@@ -36,7 +36,7 @@ public class StarryGelBlock extends Block {
     @Override
     public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
         if (direction == Direction.UP) {
-            return stateFrom.getBlock() instanceof LayeredStarryGelBlock && this.isFullBlock(state);
+            return stateFrom.getBlock() instanceof StarryGelBlock && this.isFullBlock(state);
         }
         return (stateFrom.getBlock() instanceof StarryGelBlock starryGelBlock && starryGelBlock.isFullBlock(stateFrom));
     }
