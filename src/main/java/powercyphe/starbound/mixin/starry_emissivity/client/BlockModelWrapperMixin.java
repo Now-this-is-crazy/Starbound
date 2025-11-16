@@ -4,7 +4,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.item.BlockModelWrapper;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +19,7 @@ import powercyphe.starbound.common.registry.SBTags;
 public class BlockModelWrapperMixin {
 
     @Inject(method = "update", at = @At("TAIL"))
-    private void starbound$starry_emissivity(ItemStackRenderState state, ItemStack stack, ItemModelResolver resolver, ItemDisplayContext displayContext, ClientLevel world, LivingEntity user, int seed, CallbackInfo ci) {
+    private void starbound$starry_emissivity(ItemStackRenderState state, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext itemDisplayContext, ClientLevel clientLevel, ItemOwner itemOwner, int i, CallbackInfo ci) {
         ItemRenderStateAddon stateAddon = (ItemRenderStateAddon) state;
         stateAddon.starbound$setStarryEmissivity(
                 stack.getOrDefault(SBItems.Components.STARRY_EMISSIVITY, false) ||

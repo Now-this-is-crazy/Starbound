@@ -1,5 +1,7 @@
 package powercyphe.starbound.common.component;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.component.tick.CommonTickingComponent;
 import powercyphe.starbound.common.registry.SBComponents;
@@ -90,18 +92,14 @@ public class StarryInvisibilityComponent implements AutoSyncedComponent, CommonT
         return this.invisibilityStrength > 0.5F;
     }
 
+
     @Override
-    public void readFromNbt(CompoundTag nbt, HolderLookup.Provider wrapperLookup) {
-        Optional<Float> optional = nbt.getFloat(INVISIBILITY_STRENGTH_KEY);
-        if (optional.isPresent()) {
-            this.invisibilityStrength = optional.get();
-        } else {
-            this.invisibilityStrength = 0;
-        }
+    public void readData(ValueInput valueInput) {
+        this.invisibilityStrength = valueInput.getFloatOr(INVISIBILITY_STRENGTH_KEY, 0F);
     }
 
     @Override
-    public void writeToNbt(CompoundTag nbt, HolderLookup.Provider wrapperLookup) {
-        nbt.putFloat(INVISIBILITY_STRENGTH_KEY, this.invisibilityStrength);
+    public void writeData(ValueOutput valueOutput) {
+        valueOutput.putFloat(INVISIBILITY_STRENGTH_KEY, this.invisibilityStrength);
     }
 }

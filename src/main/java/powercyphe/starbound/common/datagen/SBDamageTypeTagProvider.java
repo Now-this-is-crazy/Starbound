@@ -17,11 +17,11 @@ public class SBDamageTypeTagProvider extends FabricTagProvider<DamageType> {
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
-        getOrCreateTagBuilder(DamageTypeTags.NO_IMPACT)
+        builder(DamageTypeTags.NO_IMPACT)
                 .addOptional(SBDamageTypes.STARRY_SHARD);
-        getOrCreateTagBuilder(DamageTypeTags.BYPASSES_COOLDOWN)
+        builder(DamageTypeTags.BYPASSES_COOLDOWN)
                 .addOptional(SBDamageTypes.STARRY_SHARD);
-        getOrCreateTagBuilder(DamageTypeTags.BYPASSES_ARMOR)
+        builder(DamageTypeTags.BYPASSES_ARMOR)
                 .addOptional(SBDamageTypes.STARRY_SHARD);
     }
 }

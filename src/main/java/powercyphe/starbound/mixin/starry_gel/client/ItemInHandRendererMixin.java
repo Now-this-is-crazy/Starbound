@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -24,15 +24,15 @@ public class ItemInHandRendererMixin {
 
     @Inject(method = "renderHandsWithItems",
     at = @At("HEAD"))
-    private void starbound$enableHeldItemRendererCondition(float tickProgress, PoseStack matrices, MultiBufferSource.BufferSource vertexConsumers, LocalPlayer player, int light, CallbackInfo ci) {
-        PlayerRenderer playerEntityRenderer = (PlayerRenderer) this.entityRenderDispatcher.getRenderer(this.minecraft.player);
+    private void starbound$enableHeldItemRendererCondition(float tickProgress, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer localPlayer, int light, CallbackInfo ci) {
+        AvatarRenderer playerEntityRenderer = (AvatarRenderer) this.entityRenderDispatcher.getRenderer(this.minecraft.player);
         ((PlayerEntityRendererHeldItemRendererCondition) playerEntityRenderer).starbound$setHeldItemRendererCondition(true);
     }
 
     @Inject(method = "renderHandsWithItems",
             at = @At("TAIL"))
-    private void starbound$disableHeldItemRendererCondition(float tickProgress, PoseStack matrices, MultiBufferSource.BufferSource vertexConsumers, LocalPlayer player, int light, CallbackInfo ci) {
-        PlayerRenderer playerEntityRenderer = (PlayerRenderer) this.entityRenderDispatcher.getRenderer(this.minecraft.player);
+    private void starbound$disableHeldItemRendererCondition(float tickProgress, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, LocalPlayer localPlayer, int light, CallbackInfo ci) {
+        AvatarRenderer playerEntityRenderer = (AvatarRenderer) this.entityRenderDispatcher.getRenderer(this.minecraft.player);
         ((PlayerEntityRendererHeldItemRendererCondition) playerEntityRenderer).starbound$setHeldItemRendererCondition(false);
     }
 }

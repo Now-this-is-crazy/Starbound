@@ -19,7 +19,6 @@
     "defaultRequire": 1
   },
   "client": [
-    "accessor.EntityRendererAccessor",
     "accessor.ItemModelResolverAccessor",
     "client.EntityRendererMixin",
     "client.EntityRenderStateMixin",
@@ -31,12 +30,12 @@
     "starry_gel.client.ItemInHandRendererMixin",
     "starry_gel.client.LivingEntityRendererMixin",
     "starry_gel.client.ModelPartMixin",
-    "starry_gel.client.PlayerRendererMixin",
+    "starry_gel.client.AvatarRendererMixin",
     "starry_goliath.client.HumanoidModelMixin",
     "starry_goliath.client.GuiMixin",
-    "starry_goliath.client.PlayerRendererMixin",
+    "starry_goliath.client.AvatarRendererMixin",
     "starry_spyglass.client.GuiMixin",
     "starry_spyglass.client.LightTextureMixin",
-    "starry_spyglass.client.PlayerRendererMixin"
+    "starry_spyglass.client.AvatarRendererMixin"
   ]
 }

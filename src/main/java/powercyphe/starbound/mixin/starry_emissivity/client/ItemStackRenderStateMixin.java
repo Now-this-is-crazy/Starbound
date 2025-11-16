@@ -16,7 +16,7 @@ public class ItemStackRenderStateMixin implements ItemRenderStateAddon {
     @Unique
     private boolean hasStarryEmissivity = false;
 
-    @ModifyVariable(method = "render", at = @At("HEAD"), index = 3, argsOnly = true)
+    @ModifyVariable(method = "submit", at = @At("HEAD"), index = 3, argsOnly = true)
     private int starbound$starryEmissivity(int light) {
         if (this.starbound$hasStarryEmissivity()) {
             return LightTexture.FULL_BRIGHT;

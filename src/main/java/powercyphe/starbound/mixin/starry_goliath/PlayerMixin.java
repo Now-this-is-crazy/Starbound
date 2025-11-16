@@ -1,5 +1,6 @@
 package powercyphe.starbound.mixin.starry_goliath;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -33,7 +34,8 @@ public class PlayerMixin {
                 int shields = component.getStarryObjectsAmount(object);
                 int removed = (int) Math.min(shields, (amount / 14F) + 1F);
 
-                for (int i = 1; i < removed; i++) {
+                player.displayClientMessage(Component.literal(shields + " " + removed), true);
+                for (int i = 0; i < removed; i++) {
                     component.removeStarryObject(object);
                 }
 

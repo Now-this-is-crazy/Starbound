@@ -50,7 +50,8 @@ public class StarryBlock extends Block {
                             mutable.set(i, j, k);
 
                             BlockState checkState = world.getBlockState(mutable);
-                            if (checkState.getBlock() instanceof StarryBlock) {
+                            Block block = checkState.getBlock();
+                            if (block instanceof StarryBlock || block instanceof StarryStairsBlock || block instanceof StarrySlabBlock || block instanceof StarryWallBlock) {
                                 world.scheduleTick(mutable, checkState.getBlock(), 20 + RandomSource.create().nextInt(80));
                             }
 

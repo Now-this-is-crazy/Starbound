@@ -5,15 +5,16 @@ import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import org.jetbrains.annotations.Nullable;
 
-public class StarryTrailParticle extends TextureSheetParticle {
+public class StarryTrailParticle extends SingleQuadParticle{
     private final SpriteSet spriteProvider;
 
     private final float baseScale;
     private final float angleMultiplier;
 
     public StarryTrailParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet spriteProvider) {
-        super(clientWorld, d, e, f, 0.0, 0.0, 0.0);
+        super(clientWorld, d, e, f, 0.0, 0.0, 0.0, spriteProvider.first());
         this.friction = 0.7F;
         this.gravity = 0.5F;
         this.xd *= 0.10000000149011612;
@@ -58,8 +59,8 @@ public class StarryTrailParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected Layer getLayer() {
+        return Layer.TRANSLUCENT;
     }
 
     @Override
@@ -74,10 +75,9 @@ public class StarryTrailParticle extends TextureSheetParticle {
             this.spriteProvider = spriteProvider;
         }
 
-        public Particle createParticle(SimpleParticleType simpleParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
-            StarryTrailParticle fancyCritParticle = new StarryTrailParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
-            fancyCritParticle.pickSprite(this.spriteProvider);
-            return fancyCritParticle;
+        @Override
+        public @Nullable Particle createParticle(SimpleParticleType particleOptions, ClientLevel clientLevel, double d, double e, double f, double g, double h, double i, RandomSource randomSource) {
+            return new StarryTrailParticle(clientLevel, d, e, f, g, h, i, this.spriteProvider);
         }
     }
 

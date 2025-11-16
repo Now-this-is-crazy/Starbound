@@ -1,13 +1,11 @@
 package powercyphe.starbound.client.render.feature;
 
-import powercyphe.starbound.common.Starbound;
-import powercyphe.starbound.common.component.StarryObjectComponent;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
@@ -19,6 +17,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.ItemDisplayContext;
 import powercyphe.starbound.client.util.EntityRenderStateAddon;
+import powercyphe.starbound.common.Starbound;
+import powercyphe.starbound.common.component.StarryObjectComponent;
 import powercyphe.starbound.common.registry.SBItems;
 import powercyphe.starbound.common.util.StarboundUtil;
 import powercyphe.starbound.mixin.accessor.ItemModelResolverAccessor;
@@ -32,13 +32,13 @@ public class StarryObjectFeatureRenderer<S extends LivingEntityRenderState, M ex
     }
 
     @Override
-    public void render(PoseStack matrices, MultiBufferSource vertexConsumers, int light, S state, float limbAngle, float limbDistance) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int light, S state, float limbAngle, float limbDistance) {
         EntityRenderStateAddon stateAddon = (EntityRenderStateAddon) state;
         Minecraft client = Minecraft.getInstance();
         float tickProgress = client.getDeltaTracker().getGameTimeDeltaPartialTick(false);
 
-        matrices.pushPose();
-        matrices.mulPose(Axis.YP.rotationDegrees(180 - state.bodyRot));
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.YP.rotationDegrees(180 - state.bodyRot));
 
         NonNullList<Tuple<StarryObjectComponent.StarryObject, Integer>> starryObjects = stateAddon.starbound$getStarryObjects();
         float baseRotation = stateAddon.starbound$getStarryObjectBaseRotation() + ((StarryObjectComponent.bRotIncrease +
@@ -56,13 +56,13 @@ public class StarryObjectFeatureRenderer<S extends LivingEntityRenderState, M ex
             ItemStackRenderState renderState = new ItemStackRenderState();
             model.update(renderState, SBItems.STARRY_GOLIATH.getDefaultInstance(), this.itemModelManager, ItemDisplayContext.FIXED, null, null, 0);
 
-            matrices.pushPose();
-            objectPos(baseRotation, floatRotation, matrices, state, i, starryObjects.size());
+            poseStack.pushPose();
+            objectPos(baseRotation, floatRotation, poseStack, state, i, starryObjects.size());
 
-            renderState.render(matrices, vertexConsumers, light, OverlayTexture.NO_OVERLAY);
-            matrices.popPose();
+            renderState.submit(poseStack, submitNodeCollector, light, OverlayTexture.NO_OVERLAY, 0);
+            poseStack.popPose();
         }
-        matrices.popPose();
+        poseStack.popPose();
     }
 
     public void objectPos(float baseRotation, float floatRotation, PoseStack matrices, S state, int objectId, int objectAmount) {

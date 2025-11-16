@@ -1,5 +1,7 @@
 package powercyphe.starbound.common.component;
 
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.component.tick.CommonTickingComponent;
 import powercyphe.starbound.common.registry.*;
@@ -60,15 +62,15 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
         SBComponents.STARRY_OBJECTS.sync(this.obj);
     }
 
-    // Nbt
+    // Value Storing
 
     @Override
-    public void readFromNbt(CompoundTag nbt, HolderLookup.Provider wrapperLookup) {
+    public void readData(ValueInput valueInput) {
         this.starryObjects.clear();
 
-        ListTag nbtList = (ListTag) nbt.get(STARRY_OBJECTS_KEY);
-        if (nbtList != null) {
-            for (Tag nbtElement : nbtList) {
+        Optional<ValueInput.TypedInputList<CompoundTag>> list = valueInput.list(STARRY_OBJECTS_KEY, CompoundTag.CODEC);
+        if (list.isPresent()) {
+            for (Tag nbtElement : list.get()) {
 
                 if (nbtElement instanceof CompoundTag nbtCompound) {
                     Optional<String> objectKey = nbtCompound.getString(STARRY_OBJECT_KEY);
@@ -85,15 +87,15 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
             }
         }
 
-        this.breakCooldown = nbt.getIntOr(BREAK_COOLDOWN_KEY, 0);
+        this.breakCooldown = valueInput.getIntOr(BREAK_COOLDOWN_KEY, 0);
 
-        this.baseRotation = nbt.getFloatOr(BASE_ROTATION_KEY, 0);
-        this.floatRotation = nbt.getFloatOr(FLOAT_ROTATION_KEY, 0);
+        this.baseRotation = valueInput.getFloatOr(BASE_ROTATION_KEY, 0);
+        this.floatRotation = valueInput.getFloatOr(FLOAT_ROTATION_KEY, 0);
     }
 
     @Override
-    public void writeToNbt(CompoundTag nbt, HolderLookup.Provider wrapperLookup) {
-        ListTag nbtList = new ListTag();
+    public void writeData(ValueOutput valueOutput) {
+        ValueOutput.TypedOutputList<CompoundTag> list = valueOutput.list(STARRY_OBJECTS_KEY, CompoundTag.CODEC);
         for (Tuple<StarryObject, Integer> pair : this.getStarryObjects()) {
             StarryObject object = pair.getA();
             int variant = pair.getB();
@@ -102,13 +104,12 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
             objectNbt.putString(STARRY_OBJECT_KEY, object.getId());
             objectNbt.putInt(STARRY_OBJECT_VARIANT_KEY, variant);
 
-            nbtList.add(objectNbt);
+            list.add(objectNbt);
         }
-        nbt.put(STARRY_OBJECTS_KEY, nbtList);
-        nbt.putInt(BREAK_COOLDOWN_KEY, this.breakCooldown);
+        valueOutput.putInt(BREAK_COOLDOWN_KEY, this.breakCooldown);
 
-        nbt.putFloat(BASE_ROTATION_KEY, this.baseRotation);
-        nbt.putFloat(FLOAT_ROTATION_KEY, this.floatRotation);
+        valueOutput.putFloat(BASE_ROTATION_KEY, this.baseRotation);
+        valueOutput.putFloat(FLOAT_ROTATION_KEY, this.floatRotation);
     }
 
     // Ticking

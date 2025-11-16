@@ -4,12 +4,13 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.RandomSource;
+import org.jetbrains.annotations.Nullable;
 
-public class StarrySmokeParticle extends TextureSheetParticle {
+public class StarrySmokeParticle extends SingleQuadParticle {
     private final float baseScale;
 
     public StarrySmokeParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet spriteProvider) {
-        super(clientWorld, d, e, f, g, h, i);
+        super(clientWorld, d, e, f, g, h, i, spriteProvider.first());
         this.friction = 0.97F;
 
         this.hasPhysics = true;
@@ -24,7 +25,7 @@ public class StarrySmokeParticle extends TextureSheetParticle {
 
         this.alpha = 0.77F;
         this.lifetime = 60 + RandomSource.create().nextInt(20);
-        this.pickSprite(spriteProvider);
+        this.setSprite(spriteProvider.get(RandomSource.create()));
     }
 
     @Override
@@ -45,8 +46,8 @@ public class StarrySmokeParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected Layer getLayer() {
+        return Layer.TRANSLUCENT;
     }
 
     public static class Factory implements ParticleProvider<SimpleParticleType> {
@@ -56,10 +57,9 @@ public class StarrySmokeParticle extends TextureSheetParticle {
             this.spriteProvider = spriteProvider;
         }
 
-        public Particle createParticle(SimpleParticleType simpleParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
-            StarrySmokeParticle starrySmokeParticle = new StarrySmokeParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
-            starrySmokeParticle.pickSprite(this.spriteProvider);
-            return starrySmokeParticle;
+        @Override
+        public @Nullable Particle createParticle(SimpleParticleType particleOptions, ClientLevel clientLevel, double d, double e, double f, double g, double h, double i, RandomSource randomSource) {
+            return new StarrySmokeParticle(clientLevel, d, e, f, g, h, i, this.spriteProvider);
         }
     }
 }

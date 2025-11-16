@@ -17,7 +17,7 @@ public class SBBlockTagProvider extends FabricTagProvider.BlockTagProvider {
 
     @Override
     protected void addTags(HolderLookup.Provider wrapperLookup) {
-        getOrCreateTagBuilder(SBTags.Blocks.STARSTONE_CONVERTABLE)
+        valueLookupBuilder(SBTags.Blocks.STARSTONE_CONVERTABLE)
                 .add(
                         Blocks.STONE,
                         Blocks.COBBLESTONE,
@@ -30,16 +30,16 @@ public class SBBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                         Blocks.END_STONE
                 );
 
-        getOrCreateTagBuilder(BlockTags.STAIRS)
+        valueLookupBuilder(BlockTags.STAIRS)
                 .add(SBBlocks.STARSTONE_STAIRS, SBBlocks.POLISHED_STARSTONE_STAIRS, SBBlocks.STARSTONE_TILE_STAIRS);
 
-        getOrCreateTagBuilder(BlockTags.SLABS)
+        valueLookupBuilder(BlockTags.SLABS)
                 .add(SBBlocks.STARSTONE_SLAB, SBBlocks.POLISHED_STARSTONE_SLAB, SBBlocks.STARSTONE_TILE_SLAB);
 
-        getOrCreateTagBuilder(BlockTags.WALLS)
+        valueLookupBuilder(BlockTags.WALLS)
                 .add(SBBlocks.STARSTONE_WALL, SBBlocks.POLISHED_STARSTONE_WALL, SBBlocks.STARSTONE_TILE_WALL);
 
-        getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_PICKAXE)
                 .add(
                         SBBlocks.STARSTONE,
                         SBBlocks.STARSTONE_STAIRS,
@@ -57,13 +57,13 @@ public class SBBlockTagProvider extends FabricTagProvider.BlockTagProvider {
                         SBBlocks.STARSTONE_TILE_WALL
                 );
 
-        getOrCreateTagBuilder(BlockTags.MINEABLE_WITH_HOE)
+        valueLookupBuilder(BlockTags.MINEABLE_WITH_HOE)
                 .add(SBBlocks.STARRY_GEL_BLOCK, SBBlocks.STARRY_GEL_LAYER, SBBlocks.STARRY_HONEY_BLOCK);
 
-        getOrCreateTagBuilder(BlockTags.PREVENT_MOB_SPAWNING_INSIDE)
+        valueLookupBuilder(BlockTags.PREVENT_MOB_SPAWNING_INSIDE)
                 .add(SBBlocks.STARRY_GEL_LAYER, SBBlocks.STARRY_GEL_BLOCK);
 
-        getOrCreateTagBuilder(BlockTags.FALL_DAMAGE_RESETTING)
+        valueLookupBuilder(BlockTags.FALL_DAMAGE_RESETTING)
                 .add(SBBlocks.STARRY_GEL_LAYER, SBBlocks.STARRY_GEL_BLOCK);
     }
 }
