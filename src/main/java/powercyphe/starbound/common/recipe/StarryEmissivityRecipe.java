@@ -1,31 +1,31 @@
 package powercyphe.starbound.common.recipe;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.SpecialCraftingRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.recipe.input.CraftingRecipeInput;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.world.World;
-import powercyphe.starbound.common.registry.ModItems;
-import powercyphe.starbound.common.registry.ModRecipeSerializers;
-import powercyphe.starbound.common.registry.ModTags;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
+import powercyphe.starbound.common.registry.SBItems;
+import powercyphe.starbound.common.registry.SBRecipeSerializers;
+import powercyphe.starbound.common.registry.SBTags;
 
-public class StarryEmissivityRecipe extends SpecialCraftingRecipe {
-    public StarryEmissivityRecipe(CraftingRecipeCategory category) {
+public class StarryEmissivityRecipe extends CustomRecipe {
+    public StarryEmissivityRecipe(CraftingBookCategory category) {
         super(category);
     }
 
     @Override
-    public boolean matches(CraftingRecipeInput input, World world) {
+    public boolean matches(CraftingInput input, Level world) {
         boolean hasStarryGel = false;
         boolean hasSingleStack = false;
 
         boolean invalid = false;
-        for (ItemStack stack : input.getStacks()) {
-            if (stack.isOf(ModItems.STARRY_GEL) && !hasStarryGel) {
+        for (ItemStack stack : input.items()) {
+            if (stack.is(SBItems.STARRY_GEL) && !hasStarryGel) {
                 hasStarryGel = true;
-            } else if (!hasSingleStack && !stack.isIn(ModTags.Items.CANNOT_HAVE_STARRY_EMISSIVITY) && !stack.getOrDefault(ModItems.Components.STARRY_EMISSIVITY, false)) {
+            } else if (!hasSingleStack && !stack.is(SBTags.Items.CANNOT_HAVE_STARRY_EMISSIVITY) && !stack.getOrDefault(SBItems.Components.STARRY_EMISSIVITY, false)) {
                 hasSingleStack = true;
             } else if (!stack.isEmpty()) {
                 invalid = true;
@@ -37,22 +37,22 @@ public class StarryEmissivityRecipe extends SpecialCraftingRecipe {
     }
 
     @Override
-    public ItemStack craft(CraftingRecipeInput input, RegistryWrapper.WrapperLookup registries) {
+    public ItemStack assemble(CraftingInput input, HolderLookup.Provider registries) {
         ItemStack singleStack = ItemStack.EMPTY;
 
-        for (ItemStack stack : input.getStacks()) {
-            if (!stack.isIn(ModTags.Items.CANNOT_HAVE_STARRY_EMISSIVITY)) {
+        for (ItemStack stack : input.items()) {
+            if (!stack.is(SBTags.Items.CANNOT_HAVE_STARRY_EMISSIVITY)) {
                 singleStack = stack;
                 break;
             }
         }
         ItemStack result = singleStack.copyWithCount(1);
-        result.set(ModItems.Components.STARRY_EMISSIVITY, true);
+        result.set(SBItems.Components.STARRY_EMISSIVITY, true);
         return result;
     }
 
     @Override
-    public RecipeSerializer<? extends SpecialCraftingRecipe> getSerializer() {
-        return ModRecipeSerializers.STARRY_EMISSIVITY;
+    public RecipeSerializer<? extends CustomRecipe> getSerializer() {
+        return SBRecipeSerializers.STARRY_EMISSIVITY;
     }
 }

@@ -27,7 +27,7 @@
 			"powercyphe.starbound.common.datagen.StarboundDataGenerator"
 		],
 		"cardinal-components": [
-			"powercyphe.starbound.common.registry.ModComponents"
+          "powercyphe.starbound.common.registry.SBComponents"
 		]
 	},
 	"mixins": [

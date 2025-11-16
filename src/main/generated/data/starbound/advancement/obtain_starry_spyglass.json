@@ -1,0 +1,33 @@
+{
+  "parent": "starbound:obtain_starry_gel",
+  "criteria": {
+    "obtain_starry_spyglass": {
+      "conditions": {
+        "items": [
+          {
+            "items": "starbound:starry_spyglass"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.starbound.obtain_starry_spyglass.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "starbound:starry_spyglass"
+    },
+    "title": {
+      "translate": "advancements.starbound.obtain_starry_spyglass.title"
+    }
+  },
+  "requirements": [
+    [
+      "obtain_starry_spyglass"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -1,24 +1,24 @@
 package powercyphe.starbound.common.item.consume;
 
 import com.mojang.serialization.MapCodec;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageType;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.consume.ConsumeEffect;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.registry.*;
-import net.minecraft.world.World;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.consume_effects.ConsumeEffect;
+import net.minecraft.world.level.Level;
 import powercyphe.starbound.common.Starbound;
 
 public record SavesFromVoidConsumeEffect() implements ConsumeEffect {
     public static final SavesFromVoidConsumeEffect INSTANCE = new SavesFromVoidConsumeEffect();
     public static final MapCodec<SavesFromVoidConsumeEffect> CODEC = MapCodec.unit(INSTANCE);
-    public static final PacketCodec<RegistryByteBuf, SavesFromVoidConsumeEffect> PACKET_CODEC = PacketCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, SavesFromVoidConsumeEffect> PACKET_CODEC = StreamCodec.unit(INSTANCE);
 
-    public static final Type<SavesFromVoidConsumeEffect> TYPE = Registry.register(Registries.CONSUME_EFFECT_TYPE, Starbound.id("saves_from_void"), new Type<>(CODEC, PACKET_CODEC));
+    public static final Type<SavesFromVoidConsumeEffect> TYPE = Registry.register(BuiltInRegistries.CONSUME_EFFECT_TYPE, Starbound.id("saves_from_void"), new Type<>(CODEC, PACKET_CODEC));
 
 
     @Override
@@ -27,15 +27,15 @@ public record SavesFromVoidConsumeEffect() implements ConsumeEffect {
     }
 
     @Override
-    public boolean onConsume(World world, ItemStack stack, LivingEntity user) {
-        if (user.getY() < (double)(world.getBottomY() - 64)) {
+    public boolean apply(Level world, ItemStack stack, LivingEntity user) {
+        if (user.getY() < (double)(world.getMinY() - 64)) {
 
-            user.requestTeleport(user.getX(), world.getBottomY() - 32, user.getZ());
-            user.setVelocity(user.getVelocity().getX(), 0, user.getVelocity().getZ());
+            user.teleportTo(user.getX(), world.getMinY() - 32, user.getZ());
+            user.setDeltaMovement(user.getDeltaMovement().x(), 0, user.getDeltaMovement().z());
 
-            user.addStatusEffect(new StatusEffectInstance(StatusEffects.LEVITATION, 400, 4));
-            user.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 600, 0));
-            user.addStatusEffect(new StatusEffectInstance(StatusEffects.BLINDNESS, 45, 0));
+            user.addEffect(new MobEffectInstance(MobEffects.LEVITATION, 400, 4));
+            user.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 600, 0));
+            user.addEffect(new MobEffectInstance(MobEffects.BLINDNESS, 45, 0));
         }
         return true;
     }

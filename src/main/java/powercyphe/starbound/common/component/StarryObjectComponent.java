@@ -1,23 +1,5 @@
 package powercyphe.starbound.common.component;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.nbt.NbtList;
-import net.minecraft.predicate.entity.EntityPredicates;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.DamageTypeTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.util.Pair;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
 import org.ladysnake.cca.api.v3.component.sync.AutoSyncedComponent;
 import org.ladysnake.cca.api.v3.component.tick.CommonTickingComponent;
 import powercyphe.starbound.common.registry.*;
@@ -25,6 +7,24 @@ import powercyphe.starbound.common.util.StarboundUtil;
 
 import java.util.List;
 import java.util.Optional;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySelector;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 public class StarryObjectComponent implements AutoSyncedComponent, CommonTickingComponent {
     public static final String STARRY_OBJECTS_KEY = "starryObjects";
@@ -32,7 +32,7 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
     public static final String STARRY_OBJECT_VARIANT_KEY = "starryObjectVariant";
 
     public static final int STARRY_OBJECTS_MAX = 7;
-    private final DefaultedList<Pair<StarryObject, Integer>> starryObjects;
+    private final NonNullList<Tuple<StarryObject, Integer>> starryObjects;
 
     private static final String BREAK_COOLDOWN_KEY = "breakCooldown";
     private int breakCooldown = 0;
@@ -49,56 +49,56 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
 
     public StarryObjectComponent(LivingEntity entity) {
         this.obj = entity;
-        this.starryObjects = DefaultedList.of();
+        this.starryObjects = NonNullList.create();
     }
 
     public static StarryObjectComponent get(LivingEntity entity) {
-        return ModComponents.STARRY_OBJECTS.get(entity);
+        return SBComponents.STARRY_OBJECTS.get(entity);
     }
 
     public void sync() {
-        ModComponents.STARRY_OBJECTS.sync(this.obj);
+        SBComponents.STARRY_OBJECTS.sync(this.obj);
     }
 
     // Nbt
 
     @Override
-    public void readFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
+    public void readFromNbt(CompoundTag nbt, HolderLookup.Provider wrapperLookup) {
         this.starryObjects.clear();
 
-        NbtList nbtList = (NbtList) nbt.get(STARRY_OBJECTS_KEY);
+        ListTag nbtList = (ListTag) nbt.get(STARRY_OBJECTS_KEY);
         if (nbtList != null) {
-            for (NbtElement nbtElement : nbtList) {
+            for (Tag nbtElement : nbtList) {
 
-                if (nbtElement instanceof NbtCompound nbtCompound) {
+                if (nbtElement instanceof CompoundTag nbtCompound) {
                     Optional<String> objectKey = nbtCompound.getString(STARRY_OBJECT_KEY);
                     Optional<Integer> objectVariant = nbtCompound.getInt(STARRY_OBJECT_VARIANT_KEY);
 
                     if (objectKey.isPresent() && objectVariant.isPresent()) {
                         StarryObject object = StarryObject.fromId(objectKey.get());
                         if (object != null) {
-                            int variant = MathHelper.clamp(objectVariant.get(), 1, object.getVariants());
-                            this.starryObjects.add(new Pair<>(object, variant));
+                            int variant = Mth.clamp(objectVariant.get(), 1, object.getVariants());
+                            this.starryObjects.add(new Tuple<>(object, variant));
                         }
                     }
                 }
             }
         }
 
-        this.breakCooldown = nbt.getInt(BREAK_COOLDOWN_KEY, 0);
+        this.breakCooldown = nbt.getIntOr(BREAK_COOLDOWN_KEY, 0);
 
-        this.baseRotation = nbt.getFloat(BASE_ROTATION_KEY, 0);
-        this.floatRotation = nbt.getFloat(FLOAT_ROTATION_KEY, 0);
+        this.baseRotation = nbt.getFloatOr(BASE_ROTATION_KEY, 0);
+        this.floatRotation = nbt.getFloatOr(FLOAT_ROTATION_KEY, 0);
     }
 
     @Override
-    public void writeToNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup wrapperLookup) {
-        NbtList nbtList = new NbtList();
-        for (Pair<StarryObject, Integer> pair : this.getStarryObjects()) {
-            StarryObject object = pair.getLeft();
-            int variant = pair.getRight();
+    public void writeToNbt(CompoundTag nbt, HolderLookup.Provider wrapperLookup) {
+        ListTag nbtList = new ListTag();
+        for (Tuple<StarryObject, Integer> pair : this.getStarryObjects()) {
+            StarryObject object = pair.getA();
+            int variant = pair.getB();
 
-            NbtCompound objectNbt = new NbtCompound();
+            CompoundTag objectNbt = new CompoundTag();
             objectNbt.putString(STARRY_OBJECT_KEY, object.getId());
             objectNbt.putInt(STARRY_OBJECT_VARIANT_KEY, variant);
 
@@ -133,20 +133,20 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
     }
 
     public void tickShards() {
-        if (this.canDealShardDamage() && this.obj.getWorld() instanceof ServerWorld serverWorld) {
-            DamageSource source = ModDamageTypes.create(this.obj.getWorld(), ModDamageTypes.STARRY_SHARD, this.obj, this.obj);
+        if (this.canDealShardDamage() && this.obj.level() instanceof ServerLevel serverWorld) {
+            DamageSource source = SBDamageTypes.create(this.obj.level(), SBDamageTypes.STARRY_SHARD, this.obj, this.obj);
             for (int index = 0; index < this.getStarryObjectsAmount(); index++) {
-                StarryObject object = this.getStarryObjects().get(index).getLeft();
+                StarryObject object = this.getStarryObjects().get(index).getA();
                 if (object == StarryObjectComponent.StarryObject.SHARD) {
-                    Vec3d objectPos = StarboundUtil.objectPos(this.baseRotation, this.floatRotation, this.obj, index, this.getStarryObjectsAmount());
-                    Box box = Box.of(objectPos, 0.35, 0.35, 0.35);
+                    Vec3 objectPos = StarboundUtil.objectPos(this.baseRotation, this.floatRotation, this.obj, index, this.getStarryObjectsAmount());
+                    AABB box = AABB.ofSize(objectPos, 0.35, 0.35, 0.35);
 
-                    List<Entity> entities = this.obj.getWorld().getOtherEntities(this.obj, box, EntityPredicates.VALID_LIVING_ENTITY.and(EntityPredicates.EXCEPT_CREATIVE_OR_SPECTATOR));
+                    List<Entity> entities = this.obj.level().getEntities(this.obj, box, EntitySelector.LIVING_ENTITY_STILL_ALIVE.and(EntitySelector.NO_CREATIVE_OR_SPECTATOR));
                     if (!entities.isEmpty()) {
                         Entity entity = entities.getFirst();
 
                         if (!((LivingEntity) entity).isInvulnerableTo(serverWorld, source)) {
-                            entity.damage(serverWorld, source, 2);
+                            entity.hurtServer(serverWorld, source, 2);
                             this.removeStarryObject(index);
                             break;
                         }
@@ -158,15 +158,15 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
 
     // Object Manipulation
 
-    public DefaultedList<Pair<StarryObject, Integer>> getStarryObjects(StarryObject object) {
-        DefaultedList<Pair<StarryObject, Integer>> list = DefaultedList.of();
+    public NonNullList<Tuple<StarryObject, Integer>> getStarryObjects(StarryObject object) {
+        NonNullList<Tuple<StarryObject, Integer>> list = NonNullList.create();
         list.addAll(this.getStarryObjects());
 
-        list.removeIf(o -> !o.getLeft().equals(object));
+        list.removeIf(o -> !o.getA().equals(object));
         return list;
     }
 
-    public DefaultedList<Pair<StarryObject, Integer>> getStarryObjects() {
+    public NonNullList<Tuple<StarryObject, Integer>> getStarryObjects() {
         return this.starryObjects;
     }
 
@@ -180,11 +180,11 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
 
     public void addStarryObject(StarryObject object) {
         if (canAddStarryObject(object)) {
-            this.starryObjects.add(new Pair<>(object, Random.create().nextBetween(1, object.getVariants())));
+            this.starryObjects.add(new Tuple<>(object, RandomSource.create().nextIntBetweenInclusive(1, object.getVariants())));
 
-            if (this.obj.getWorld() instanceof ServerWorld serverWorld) {
-                Vec3d vec3d = StarboundUtil.objectPos(baseRotation, floatRotation, this.obj, this.getStarryObjectsAmount()-1, this.getStarryObjectsAmount());
-                serverWorld.spawnParticles(ModParticles.STARRY_CRIT, vec3d.getX(), vec3d.getY(), vec3d.getZ(), 7, 0, 0, 0, 1);
+            if (this.obj.level() instanceof ServerLevel serverWorld) {
+                Vec3 vec3d = StarboundUtil.objectPos(baseRotation, floatRotation, this.obj, this.getStarryObjectsAmount()-1, this.getStarryObjectsAmount());
+                serverWorld.sendParticles(SBParticles.STARRY_CRIT, vec3d.x(), vec3d.y(), vec3d.z(), 7, 0, 0, 0, 1);
             }
             this.playSound(object.getCreateSound());
             this.sync();
@@ -193,8 +193,8 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
 
     public void removeStarryObject(StarryObject object) {
         int index = 0;
-        for (Pair<StarryObject, Integer> pair : this.getStarryObjects()) {
-            if (pair.getLeft() == object) {
+        for (Tuple<StarryObject, Integer> pair : this.getStarryObjects()) {
+            if (pair.getA() == object) {
                 break;
             }
             index++;
@@ -204,13 +204,13 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
 
     public void removeStarryObject(int index) {
         if (getStarryObjectsAmount() > 0 && this.getStarryObjectsAmount() > index) {
-            StarryObject object = this.getStarryObjects().get(index).getLeft();
+            StarryObject object = this.getStarryObjects().get(index).getA();
             this.starryObjects.remove(index);
             this.breakCooldown = object.getBreakCooldown();
 
-            if (this.obj.getWorld() instanceof ServerWorld serverWorld) {
-                Vec3d vec3d = StarboundUtil.objectPos(baseRotation, floatRotation, this.obj, index, this.getStarryObjectsAmount()+1);
-                serverWorld.spawnParticles(ModParticles.STARRY_CRIT, vec3d.getX(), vec3d.getY(), vec3d.getZ(), 7, 0, 0, 0, 1);
+            if (this.obj.level() instanceof ServerLevel serverWorld) {
+                Vec3 vec3d = StarboundUtil.objectPos(baseRotation, floatRotation, this.obj, index, this.getStarryObjectsAmount()+1);
+                serverWorld.sendParticles(SBParticles.STARRY_CRIT, vec3d.x(), vec3d.y(), vec3d.z(), 7, 0, 0, 0, 1);
             }
             this.playSound(object.getBreakSound());
             this.sync();
@@ -237,18 +237,18 @@ public class StarryObjectComponent implements AutoSyncedComponent, CommonTicking
 
     // Shield Functionality
     public boolean hasShieldInvulnerability(DamageSource source) {
-        return getStarryObjectsAmount(StarryObject.SHIELD) > 0 && !source.isIn(DamageTypeTags.BYPASSES_INVULNERABILITY) && source.getAttacker() != null
-                && !source.isIn(ModTags.DamageTypes.BYPASSES_STARRY_SHIELD);
+        return getStarryObjectsAmount(StarryObject.SHIELD) > 0 && !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) && source.getEntity() != null
+                && !source.is(SBTags.DamageTypes.BYPASSES_STARRY_SHIELD);
     }
 
     public void playSound(SoundEvent soundEvent) {
-        Vec3d pos = this.obj.getPos();
-        this.obj.getWorld().playSound(null, pos.getX(), pos.getY(), pos.getZ(), soundEvent, SoundCategory.PLAYERS, 1F, 0.85F + (Random.create().nextFloat() * 0.3F));
+        Vec3 pos = this.obj.position();
+        this.obj.level().playSound(null, pos.x(), pos.y(), pos.z(), soundEvent, SoundSource.PLAYERS, 1F, 0.85F + (RandomSource.create().nextFloat() * 0.3F));
     }
 
     public enum StarryObject {
-        SHIELD("shield", 25, 10, 5, 1, ModSounds.STARRY_SHIELD_CREATE, ModSounds.STARRY_SHIELD_BREAK),
-        SHARD("shard", 20, 10, 7, 3, ModSounds.STARRY_SHARD_CREATE, ModSounds.STARRY_SHARD_BREAK)
+        SHIELD("shield", 25, 10, 5, 1, SBSounds.STARRY_SHIELD_CREATE, SBSounds.STARRY_SHIELD_BREAK),
+        SHARD("shard", 20, 10, 7, 3, SBSounds.STARRY_SHARD_CREATE, SBSounds.STARRY_SHARD_BREAK)
         ;
 
         private final String id;

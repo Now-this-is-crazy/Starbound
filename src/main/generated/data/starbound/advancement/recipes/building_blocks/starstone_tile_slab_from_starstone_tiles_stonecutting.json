@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:starstone_tile_slab_from_starstone_tiles_stonecutting"
+        "recipe": "starbound:starstone_tile_slab_from_starstone_tiles_stonecutting"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -26,7 +26,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:starstone_tile_slab_from_starstone_tiles_stonecutting"
+      "starbound:starstone_tile_slab_from_starstone_tiles_stonecutting"
     ]
   }
 }

@@ -2,36 +2,41 @@
   "required": true,
   "package": "powercyphe.starbound.mixin",
   "compatibilityLevel": "JAVA_21",
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  },
   "mixins": [
     "LivingEntityMixin",
+    "starry_emissivity.AbstractCauldronBlockMixin",
     "starry_gel.EntityMixin",
     "starry_gel.LivingEntityMixin",
-    "starry_gel.PlayerEntityMixin",
-    "starry_goliath.PlayerEntityMixin",
-    "starry_goliath.ServerPlayerEntityMixin",
-    "starry_spyglass.PlayerEntityMixin"
+    "starry_gel.PlayerMixin",
+    "starry_goliath.PlayerMixin",
+    "starry_goliath.ServerPlayerMixin",
+    "starry_spyglass.PlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "client": [
     "accessor.EntityRendererAccessor",
-    "accessor.ItemModelManagerAccessor",
+    "accessor.ItemModelResolverAccessor",
     "client.EntityRendererMixin",
     "client.EntityRenderStateMixin",
-    "client.MinecraftClientMixin",
-    "client.starry_emissivity.ArmorFeatureRendererMixin",
-    "client.starry_emissivity.ItemModelMixin",
-    "client.starry_emissivity.ItemRenderStateMixin",
-    "starry_gel.client.HeldItemRendererMixin",
+    "client.MinecraftMixin",
+    "client.TrimMaterialPropertyMixin",
+    "starry_emissivity.client.HumanoidArmorLayerMixin",
+    "starry_emissivity.client.BlockModelWrapperMixin",
+    "starry_emissivity.client.ItemStackRenderStateMixin",
+    "starry_gel.client.ItemInHandRendererMixin",
     "starry_gel.client.LivingEntityRendererMixin",
     "starry_gel.client.ModelPartMixin",
-    "starry_gel.client.PlayerEntityRendererMixin",
-    "starry_goliath.client.BipedEntityModelMixin",
-    "starry_goliath.client.InGameHudMixin",
-    "starry_goliath.client.PlayerEntityRendererMixin",
-    "starry_spyglass.client.InGameHudMixin",
-    "starry_spyglass.client.LightmapTextureManagerMixin",
-    "starry_spyglass.client.PlayerHeldItemFeatureRendererMixin"
+    "starry_gel.client.PlayerRendererMixin",
+    "starry_goliath.client.HumanoidModelMixin",
+    "starry_goliath.client.GuiMixin",
+    "starry_goliath.client.PlayerRendererMixin",
+    "starry_spyglass.client.GuiMixin",
+    "starry_spyglass.client.LightTextureMixin",
+    "starry_spyglass.client.PlayerRendererMixin"
   ]
 }

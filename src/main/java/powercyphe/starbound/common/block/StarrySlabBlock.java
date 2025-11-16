@@ -1,48 +1,48 @@
 package powercyphe.starbound.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.BooleanProperty;
-import net.minecraft.state.property.Properties;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.AABB;
 
 public class StarrySlabBlock extends SlabBlock {
-    public static BooleanProperty LIT = Properties.LIT;
+    public static BooleanProperty LIT = BlockStateProperties.LIT;
 
-    public StarrySlabBlock(Settings settings) {
+    public StarrySlabBlock(Properties settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(LIT, false));
+        this.registerDefaultState(this.defaultBlockState().setValue(LIT, false));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(LIT);
-        super.appendProperties(builder);
+        super.createBlockStateDefinition(builder);
     }
 
     @Override
-    protected void randomTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
-        scheduledTick(state, world, pos, random);
+    protected void randomTick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+        tick(state, world, pos, random);
     }
 
     @Override
-    public void scheduledTick(BlockState state, ServerWorld world, BlockPos blockPos, Random random) {
-        boolean lit = state.get(LIT);
+    public void tick(BlockState state, ServerLevel world, BlockPos blockPos, RandomSource random) {
+        boolean lit = state.getValue(LIT);
 
         if (shouldNotify(world, state)) {
-            Box box = Box.of(blockPos.toCenterPos(), 2, 2, 2);
+            AABB box = AABB.ofSize(blockPos.getCenter(), 2, 2, 2);
 
-            BlockPos blockPos1 = BlockPos.ofFloored(box.minX + 1.0E-7, box.minY + 1.0E-7, box.minZ + 1.0E-7);
-            BlockPos blockPos2 = BlockPos.ofFloored(box.maxX - 1.0E-7, box.maxY - 1.0E-7, box.maxZ - 1.0E-7);
+            BlockPos blockPos1 = BlockPos.containing(box.minX + 1.0E-7, box.minY + 1.0E-7, box.minZ + 1.0E-7);
+            BlockPos blockPos2 = BlockPos.containing(box.maxX - 1.0E-7, box.maxY - 1.0E-7, box.maxZ - 1.0E-7);
 
-            if (world.isRegionLoaded(blockPos1, blockPos2)) {
-                BlockPos.Mutable mutable = new BlockPos.Mutable();
+            if (world.hasChunksAt(blockPos1, blockPos2)) {
+                BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
 
                 for(int i = blockPos.getX(); i <= blockPos2.getX(); ++i) {
                     for(int j = blockPos.getY(); j <= blockPos2.getY(); ++j) {
@@ -51,7 +51,7 @@ public class StarrySlabBlock extends SlabBlock {
 
                             BlockState checkState = world.getBlockState(mutable);
                             if (checkState.getBlock() instanceof StarryBlock) {
-                                world.scheduleBlockTick(mutable, checkState.getBlock(), 20 + Random.create().nextInt(80));
+                                world.scheduleTick(mutable, checkState.getBlock(), 20 + RandomSource.create().nextInt(80));
                             }
 
                         }
@@ -59,12 +59,12 @@ public class StarrySlabBlock extends SlabBlock {
                 }
             }
         } else {
-            world.setBlockState(blockPos, state.with(LIT, !lit));
-            world.scheduleBlockTick(blockPos, state.getBlock(), 1);
+            world.setBlockAndUpdate(blockPos, state.setValue(LIT, !lit));
+            world.scheduleTick(blockPos, state.getBlock(), 1);
         }
     }
 
-    public boolean shouldNotify(World world, BlockState state) {
-        return world.isNight() == state.get(LIT);
+    public boolean shouldNotify(Level world, BlockState state) {
+        return world.isDarkOutside() == state.getValue(LIT);
     }
 }

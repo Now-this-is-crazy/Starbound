@@ -1,94 +1,94 @@
 package powercyphe.starbound.common.item;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.component.type.AttributeModifierSlot;
-import net.minecraft.component.type.AttributeModifiersComponent;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ToolMaterial;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Identifier;
-import net.minecraft.world.World;
+import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.level.Level;
 import powercyphe.starbound.common.Starbound;
 import powercyphe.starbound.common.component.StarryObjectComponent;
 import powercyphe.starbound.common.network.StarryChargeSoundPayload;
-import powercyphe.starbound.common.registry.ModEnchantments;
+import powercyphe.starbound.common.registry.SBEnchantments;
 
 import java.util.Optional;
 
 public class StarryGoliathItem extends Item {
-    public static Identifier BLOCK_INTERACTION_RANGE_MODIFIER_ID = Starbound.id("block_interaction_range");
-    public static Identifier ENTITY_INTERACTION_RANGE_MODIFIER_ID = Starbound.id("entity_interaction_range");
+    public static ResourceLocation BLOCK_INTERACTION_RANGE_MODIFIER_ID = Starbound.id("block_interaction_range");
+    public static ResourceLocation ENTITY_INTERACTION_RANGE_MODIFIER_ID = Starbound.id("entity_interaction_range");
 
-    public StarryGoliathItem(ToolMaterial material, float attackDamage, float attackSpeed, float reach, Settings settings) {
-        super(settings.axe(material, attackDamage, attackSpeed).attributeModifiers(createStarryGoliathAttributes(material, attackDamage, attackSpeed, reach)));
+    public StarryGoliathItem(ToolMaterial material, float attackDamage, float attackSpeed, float reach, Properties settings) {
+        super(settings.axe(material, attackDamage, attackSpeed).attributes(createStarryGoliathAttributes(material, attackDamage, attackSpeed, reach)));
     }
 
-    public static AttributeModifiersComponent createStarryGoliathAttributes(ToolMaterial material, float attackDamage, float attackSpeed, float reach) {
-        return AttributeModifiersComponent.builder().add(EntityAttributes.ATTACK_DAMAGE,
-                new EntityAttributeModifier(Item.BASE_ATTACK_DAMAGE_MODIFIER_ID, attackDamage + material.attackDamageBonus(),
-                        EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND).add(EntityAttributes.ATTACK_SPEED,
-                new EntityAttributeModifier(Item.BASE_ATTACK_SPEED_MODIFIER_ID, attackSpeed,
-                        EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND).add(EntityAttributes.BLOCK_INTERACTION_RANGE,
-                new EntityAttributeModifier(BLOCK_INTERACTION_RANGE_MODIFIER_ID, reach,
-                        EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND).add(EntityAttributes.ENTITY_INTERACTION_RANGE,
-                new EntityAttributeModifier(ENTITY_INTERACTION_RANGE_MODIFIER_ID, reach,
-                        EntityAttributeModifier.Operation.ADD_VALUE), AttributeModifierSlot.MAINHAND)
+    public static ItemAttributeModifiers createStarryGoliathAttributes(ToolMaterial material, float attackDamage, float attackSpeed, float reach) {
+        return ItemAttributeModifiers.builder().add(Attributes.ATTACK_DAMAGE,
+                new AttributeModifier(Item.BASE_ATTACK_DAMAGE_ID, attackDamage + material.attackDamageBonus(),
+                        AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND).add(Attributes.ATTACK_SPEED,
+                new AttributeModifier(Item.BASE_ATTACK_SPEED_ID, attackSpeed,
+                        AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND).add(Attributes.BLOCK_INTERACTION_RANGE,
+                new AttributeModifier(BLOCK_INTERACTION_RANGE_MODIFIER_ID, reach,
+                        AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND).add(Attributes.ENTITY_INTERACTION_RANGE,
+                new AttributeModifier(ENTITY_INTERACTION_RANGE_MODIFIER_ID, reach,
+                        AttributeModifier.Operation.ADD_VALUE), EquipmentSlotGroup.MAINHAND)
                 .build();
     }
 
     @Override
-    public ActionResult use(World world, PlayerEntity user, Hand hand) {
-        ItemStack stack = user.getStackInHand(hand);
+    public InteractionResult use(Level world, Player user, InteractionHand hand) {
+        ItemStack stack = user.getItemInHand(hand);
 
         StarryObjectComponent component = StarryObjectComponent.get(user);
-        StarryObjectComponent.StarryObject object = getStarryObject(stack, user.getRegistryManager());
+        StarryObjectComponent.StarryObject object = getStarryObject(stack, user.registryAccess());
 
-        if (!user.getItemCooldownManager().isCoolingDown(stack) && hand == Hand.MAIN_HAND && component.canAddStarryObject(object)) {
-            if (world instanceof ServerWorld serverWorld) {
-                for (ServerPlayerEntity player : serverWorld.getPlayers()) {
+        if (!user.getCooldowns().isOnCooldown(stack) && hand == InteractionHand.MAIN_HAND && component.canAddStarryObject(object)) {
+            if (world instanceof ServerLevel serverWorld) {
+                for (ServerPlayer player : serverWorld.players()) {
                     ServerPlayNetworking.send(player, new StarryChargeSoundPayload(user.getId(), stack));
                 }
             }
-            user.setCurrentHand(hand);
-            return ActionResult.CONSUME;
+            user.startUsingItem(hand);
+            return InteractionResult.CONSUME;
         }
 
-        return ActionResult.PASS;
+        return InteractionResult.PASS;
     }
 
     @Override
-    public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
+    public void onUseTick(Level world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
         StarryObjectComponent component = StarryObjectComponent.get(user);
-        StarryObjectComponent.StarryObject object = getStarryObject(stack, user.getRegistryManager());
+        StarryObjectComponent.StarryObject object = getStarryObject(stack, user.registryAccess());
 
-        if ((user.getItemUseTime()+1) % object.getReplenishTime() == 0 && !world.isClient()) {
+        if ((user.getTicksUsingItem()+1) % object.getReplenishTime() == 0 && !world.isClientSide()) {
             component.addStarryObject(object);
             if (!component.canAddStarryObject(object)) {
-                user.stopUsingItem();
+                user.releaseUsingItem();
             }
         }
     }
 
     @Override
-    public int getMaxUseTime(ItemStack stack, LivingEntity user) {
+    public int getUseDuration(ItemStack stack, LivingEntity user) {
         return 700;
     }
 
-    public static StarryObjectComponent.StarryObject getStarryObject(ItemStack stack, DynamicRegistryManager wrapperLookup) {
-        Optional<RegistryEntry.Reference<Enchantment>> enchantment = wrapperLookup.getOptionalEntry(ModEnchantments.FLAIL);
-        if (enchantment.isPresent() && EnchantmentHelper.getLevel(enchantment.get(), stack) > 0) {
+    public static StarryObjectComponent.StarryObject getStarryObject(ItemStack stack, RegistryAccess wrapperLookup) {
+        Optional<Holder.Reference<Enchantment>> enchantment = wrapperLookup.get(SBEnchantments.FLAIL);
+        if (enchantment.isPresent() && EnchantmentHelper.getItemEnchantmentLevel(enchantment.get(), stack) > 0) {
             return StarryObjectComponent.StarryObject.SHARD;
         }
         return StarryObjectComponent.StarryObject.SHIELD;

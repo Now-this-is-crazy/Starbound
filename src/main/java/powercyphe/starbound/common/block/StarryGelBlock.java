@@ -1,40 +1,44 @@
 package powercyphe.starbound.common.block;
 
-import net.minecraft.block.*;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EquipmentSlot;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.pathing.NavigationType;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import powercyphe.starbound.common.registry.ModBlocks;
-import powercyphe.starbound.common.registry.ModParticles;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.EntityCollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import powercyphe.starbound.common.registry.SBBlocks;
+import powercyphe.starbound.common.registry.SBParticles;
 import powercyphe.starbound.common.util.StarboundUtil;
 
 public class StarryGelBlock extends Block {
-    public StarryGelBlock(Settings settings) {
+    public StarryGelBlock(Properties settings) {
         super(settings);
     }
 
     @Override
-    public VoxelShape getCollisionShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) {
-        VoxelShape collisionShape = StarryGelBlock.createCuboidShape(0, 15, 0, 16,16, 16);
-        if (context instanceof EntityShapeContext entityShapeContext && canWalkOnTop(entityShapeContext, collisionShape, pos)) {
+    public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context) {
+        VoxelShape collisionShape = StarryGelBlock.box(0, 15, 0, 16,16, 16);
+        if (context instanceof EntityCollisionContext entityShapeContext && canWalkOnTop(entityShapeContext, collisionShape, pos)) {
             return collisionShape;
         }
-        return VoxelShapes.empty();
+        return Shapes.empty();
     }
 
     @Override
-    public boolean isSideInvisible(BlockState state, BlockState stateFrom, Direction direction) {
+    public boolean skipRendering(BlockState state, BlockState stateFrom, Direction direction) {
         if (direction == Direction.UP) {
             return stateFrom.getBlock() instanceof StarryGelBlock && this.isFullBlock(state);
         }
@@ -42,47 +46,47 @@ public class StarryGelBlock extends Block {
     }
 
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos blockPos, Random random) {
-        DefaultedList<BlockPos> affectedBlocks = DefaultedList.of();
+    public void randomTick(BlockState state, ServerLevel world, BlockPos blockPos, RandomSource random) {
+        NonNullList<BlockPos> affectedBlocks = NonNullList.create();
 
         for (Direction direction : Direction.values()) {
-            BlockPos neighborPos = blockPos.offset(direction);
+            BlockPos neighborPos = blockPos.relative(direction);
             BlockState neighborState = world.getBlockState(neighborPos);
 
-            if (neighborState.isOf(Blocks.HONEY_BLOCK)) {
+            if (neighborState.is(Blocks.HONEY_BLOCK)) {
                 affectedBlocks.add(neighborPos);
             }
         }
         if (!affectedBlocks.isEmpty()) {
-            BlockPos affectedBlock = affectedBlocks.get(random.nextBetween(0, affectedBlocks.size()-1));
-            world.setBlockState(affectedBlock, ModBlocks.STARRY_HONEY_BLOCK.getDefaultState());
+            BlockPos affectedBlock = affectedBlocks.get(random.nextIntBetweenInclusive(0, affectedBlocks.size()-1));
+            world.setBlockAndUpdate(affectedBlock, SBBlocks.STARRY_HONEY_BLOCK.defaultBlockState());
         }
     }
 
     @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos blockPos, Random random) {
+    public void animateTick(BlockState state, Level world, BlockPos blockPos, RandomSource random) {
         if (random.nextInt(20) == 0) {
-            Direction direction = Direction.random(random);
-            BlockPos neighborPos = blockPos.offset(direction);
+            Direction direction = Direction.getRandom(random);
+            BlockPos neighborPos = blockPos.relative(direction);
             BlockState neighborState = world.getBlockState(neighborPos);
-            if (!state.isOpaque() || !neighborState.isSideSolidFullSquare(world, blockPos, direction.getOpposite())) {
-                double d = direction.getOffsetX() == 0 ? random.nextDouble() : 0.5 + (double)direction.getOffsetX() * 0.6;
-                double e = direction.getOffsetY() == 0 ? random.nextDouble() : 0.5 + (double)direction.getOffsetY() * 0.6;
-                double f = direction.getOffsetZ() == 0 ? random.nextDouble() : 0.5 + (double)direction.getOffsetZ() * 0.6;
-                world.addParticleClient(ModParticles.STARRY_CRIT, blockPos.getX() + d, blockPos.getY() + e, blockPos.getZ() + f, 0.0, 0.0, 0.0);
+            if (!state.canOcclude() || !neighborState.isFaceSturdy(world, blockPos, direction.getOpposite())) {
+                double d = direction.getStepX() == 0 ? random.nextDouble() : 0.5 + (double)direction.getStepX() * 0.6;
+                double e = direction.getStepY() == 0 ? random.nextDouble() : 0.5 + (double)direction.getStepY() * 0.6;
+                double f = direction.getStepZ() == 0 ? random.nextDouble() : 0.5 + (double)direction.getStepZ() * 0.6;
+                world.addParticle(SBParticles.STARRY_CRIT, blockPos.getX() + d, blockPos.getY() + e, blockPos.getZ() + f, 0.0, 0.0, 0.0);
             }
         }
     }
 
     @Override
-    protected boolean canPathfindThrough(BlockState state, NavigationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType type) {
         return false;
     }
 
-    public boolean canWalkOnTop(EntityShapeContext entityShapeContext, VoxelShape collisionShape, BlockPos blockPos) {
+    public boolean canWalkOnTop(EntityCollisionContext entityShapeContext, VoxelShape collisionShape, BlockPos blockPos) {
         Entity entity = entityShapeContext.getEntity();
         return entity instanceof LivingEntity livingEntity && !StarboundUtil.isInStarryGel(entity) &&
-                livingEntity.getEquippedStack(EquipmentSlot.FEET).isIn(ItemTags.FOOT_ARMOR)
+                livingEntity.getItemBySlot(EquipmentSlot.FEET).is(ItemTags.FOOT_ARMOR)
                 && entityShapeContext.isAbove(collisionShape, blockPos, true);
     }
 

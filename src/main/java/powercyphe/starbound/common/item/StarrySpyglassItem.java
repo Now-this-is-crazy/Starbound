@@ -1,23 +1,22 @@
 package powercyphe.starbound.common.item;
 
-import net.minecraft.component.type.TooltipDisplayComponent;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.SpyglassItem;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.function.Consumer;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.SpyglassItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 
 public class StarrySpyglassItem extends SpyglassItem {
-    public StarrySpyglassItem(Settings settings) {
+    public StarrySpyglassItem(Properties settings) {
         super(settings);
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, TooltipContext context, TooltipDisplayComponent displayComponent, Consumer<Text> textConsumer, TooltipType type) {
-        textConsumer.accept(Text.translatable("tooltip.starbound.starry_spyglass_1").formatted(Formatting.GRAY));
-        textConsumer.accept(Text.translatable("tooltip.starbound.starry_spyglass_2").formatted(Formatting.GRAY));
-        super.appendTooltip(stack, context, displayComponent, textConsumer, type);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay displayComponent, Consumer<Component> textConsumer, TooltipFlag type) {
+        textConsumer.accept(Component.translatable("tooltip.starbound.starry_spyglass_1").withStyle(ChatFormatting.GRAY));
+        textConsumer.accept(Component.translatable("tooltip.starbound.starry_spyglass_2").withStyle(ChatFormatting.GRAY));
+        super.appendHoverText(stack, context, displayComponent, textConsumer, type);
     }
 }

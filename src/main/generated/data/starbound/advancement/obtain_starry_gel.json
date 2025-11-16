@@ -1,0 +1,35 @@
+{
+  "criteria": {
+    "obtain_starry_gel": {
+      "conditions": {
+        "items": [
+          {
+            "items": "starbound:starry_gel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "starbound:block/starstone_lit",
+    "description": {
+      "translate": "advancements.starbound.obtain_starry_gel.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "starbound:starry_gel"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.starbound.obtain_starry_gel.title"
+    }
+  },
+  "requirements": [
+    [
+      "obtain_starry_gel"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

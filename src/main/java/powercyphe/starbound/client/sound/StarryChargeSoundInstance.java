@@ -1,18 +1,13 @@
 package powercyphe.starbound.client.sound;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.sound.MovingSoundInstance;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.random.Random;
-import powercyphe.starbound.common.registry.ModItems;
-import powercyphe.starbound.common.registry.ModSounds;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import powercyphe.starbound.common.registry.SBSounds;
 
-public class StarryChargeSoundInstance extends MovingSoundInstance {
+public class StarryChargeSoundInstance extends AbstractTickableSoundInstance {
     private final LivingEntity entity;
     private final ItemStack stack;
 
@@ -22,11 +17,11 @@ public class StarryChargeSoundInstance extends MovingSoundInstance {
     private final int replenishTime;
 
     public StarryChargeSoundInstance(LivingEntity entity, ItemStack stack, float volume, float pitch, int replenishTime) {
-        super(ModSounds.STARRY_OBJECT_CHARGE, SoundCategory.PLAYERS, Random.create(0));
+        super(SBSounds.STARRY_OBJECT_CHARGE, SoundSource.PLAYERS, RandomSource.create(0));
 
         this.volume = volume;
         this.pitch = pitch;
-        this.repeat = true;
+        this.looping = true;
 
         this.entity = entity;
         this.stack = stack;
@@ -44,28 +39,28 @@ public class StarryChargeSoundInstance extends MovingSoundInstance {
     @Override
     public void tick() {
         if (this.entity == null || this.entity.isRemoved()) {
-            this.setDone();
+            this.stop();
         } else {
             this.x = ((float)this.entity.getX());
             this.y = ((float)this.entity.getY());
             this.z = ((float)this.entity.getZ());
 
-            if (!this.entity.isUsingItem() || !ItemStack.areItemsEqual(this.entity.getActiveItem(), this.stack)) {
+            if (!this.entity.isUsingItem() || !ItemStack.isSameItem(this.entity.getUseItem(), this.stack)) {
                 this.finished = true;
             }
             if (!this.finished) {
                 float lowPitchTicks = 5F;
-                if (entity.getItemUseTime() % replenishTime <= lowPitchTicks) {
-                    this.pitch = 1.3F - ((this.entity.getItemUseTime() % replenishTime) / lowPitchTicks * 0.6F);
+                if (entity.getTicksUsingItem() % replenishTime <= lowPitchTicks) {
+                    this.pitch = 1.3F - ((this.entity.getTicksUsingItem() % replenishTime) / lowPitchTicks * 0.6F);
                 } else {
-                    this.pitch = 0.7F + ((this.entity.getItemUseTime() % replenishTime - lowPitchTicks) / (replenishTime - lowPitchTicks) * 0.6F);
+                    this.pitch = 0.7F + ((this.entity.getTicksUsingItem() % replenishTime - lowPitchTicks) / (replenishTime - lowPitchTicks) * 0.6F);
                 }
             } else if (this.finishedTicks > 0) {
                 this.finishedTicks--;
                 this.pitch *= 0.98F;
                 this.volume *= 0.77F;
             } else {
-                this.setDone();
+                this.stop();
             }
         }
     }

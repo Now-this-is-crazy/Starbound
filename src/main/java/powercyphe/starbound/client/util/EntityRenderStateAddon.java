@@ -1,16 +1,13 @@
 package powercyphe.starbound.client.util;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Pair;
-import net.minecraft.util.collection.DefaultedList;
 import powercyphe.starbound.common.component.StarryObjectComponent;
 
 import java.util.UUID;
+import net.minecraft.core.NonNullList;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.item.ItemStack;
 
 public interface EntityRenderStateAddon {
-
-    UUID starbound$getUUID();
-    void starbound$setUUID(UUID uuid);
 
     ItemStack starbound$getActiveStack();
     void starbound$setActiveStack(ItemStack stack);
@@ -18,8 +15,8 @@ public interface EntityRenderStateAddon {
     float starbound$getStarryInvisibilityStrength();
     void starbound$setStarryInvisibilityStrength(float invisibilityStrength);
 
-    DefaultedList<Pair<StarryObjectComponent.StarryObject, Integer>> starbound$getStarryObjects();
-    void starbound$setStarryObjects(DefaultedList<Pair<StarryObjectComponent.StarryObject, Integer>> starryObjects);
+    NonNullList<Tuple<StarryObjectComponent.StarryObject, Integer>> starbound$getStarryObjects();
+    void starbound$setStarryObjects(NonNullList<Tuple<StarryObjectComponent.StarryObject, Integer>> starryObjects);
 
     float starbound$getStarryObjectBaseRotation();
     void starbound$setStarryObjectBaseRotation(float baseRotation);

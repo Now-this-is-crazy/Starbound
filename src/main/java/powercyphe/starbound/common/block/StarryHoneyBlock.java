@@ -1,57 +1,54 @@
 package powercyphe.starbound.common.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.HoneyBlock;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.IntProperty;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
-import powercyphe.starbound.common.Starbound;
-import powercyphe.starbound.common.registry.ModBlocks;
-import powercyphe.starbound.common.registry.ModParticles;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.HoneyBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.phys.Vec3;
+import powercyphe.starbound.common.registry.SBBlocks;
+import powercyphe.starbound.common.registry.SBParticles;
 import powercyphe.starbound.common.util.StarboundUtil;
 
 public class StarryHoneyBlock extends HoneyBlock {
     public static int LEVEL_MAX = 3;
-    public static IntProperty LEVEL = IntProperty.of("level", 1, LEVEL_MAX);
+    public static IntegerProperty LEVEL = IntegerProperty.create("level", 1, LEVEL_MAX);
 
-    public StarryHoneyBlock(Settings settings) {
+    public StarryHoneyBlock(Properties settings) {
         super(settings);
-        this.setDefaultState(this.getDefaultState().with(LEVEL, 1));
+        this.registerDefaultState(this.defaultBlockState().setValue(LEVEL, 1));
     }
 
     @Override
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(LEVEL);
-        super.appendProperties(builder);
+        super.createBlockStateDefinition(builder);
     }
 
     @Override
-    public void randomTick(BlockState state, ServerWorld world, BlockPos blockPos, Random random) {
-        int level = state.get(LEVEL);
-        Vec3d particlePos = blockPos.toCenterPos();
+    public void randomTick(BlockState state, ServerLevel world, BlockPos blockPos, RandomSource random) {
+        int level = state.getValue(LEVEL);
+        Vec3 particlePos = blockPos.getCenter();
 
         if (level < LEVEL_MAX && StarboundUtil.hasNearbyStarryGel(world, blockPos)) {
-            world.setBlockState(blockPos, state.with(LEVEL, level+1));
-            world.spawnParticles(ModParticles.STARRY_TRAIL, particlePos.getX(), particlePos.getY(), particlePos.getZ(), 14, 0.5, 0.5, 0.5, 0.5);
+            world.setBlockAndUpdate(blockPos, state.setValue(LEVEL, level+1));
+            world.sendParticles(SBParticles.STARRY_TRAIL, particlePos.x(), particlePos.y(), particlePos.z(), 14, 0.5, 0.5, 0.5, 0.5);
         } else {
             if (StarboundUtil.hasNearbyStarryGel(world, blockPos)) {
-                world.setBlockState(blockPos, ModBlocks.STARRY_GEL_BLOCK.getDefaultState());
-                world.spawnParticles(ModParticles.STARRY_CRIT, particlePos.getX(), particlePos.getY(), particlePos.getZ(), 14, 0.5, 0.5, 0.5, 0);
+                world.setBlockAndUpdate(blockPos, SBBlocks.STARRY_GEL_BLOCK.defaultBlockState());
+                world.sendParticles(SBParticles.STARRY_CRIT, particlePos.x(), particlePos.y(), particlePos.z(), 14, 0.5, 0.5, 0.5, 0);
             } else {
-                BlockState newState = level > 1 ? state.with(LEVEL, level-1) : Blocks.HONEY_BLOCK.getDefaultState();
-                world.setBlockState(blockPos, newState);
+                BlockState newState = level > 1 ? state.setValue(LEVEL, level-1) : Blocks.HONEY_BLOCK.defaultBlockState();
+                world.setBlockAndUpdate(blockPos, newState);
 
-                BlockStateParticleEffect par = new BlockStateParticleEffect(ParticleTypes.BLOCK, newState);
-                world.spawnParticles(par, particlePos.getX(), particlePos.getY(), particlePos.getZ(), 14, 0.5, 0.5, 0.5, 0.5);
+                BlockParticleOption par = new BlockParticleOption(ParticleTypes.BLOCK, newState);
+                world.sendParticles(par, particlePos.x(), particlePos.y(), particlePos.z(), 14, 0.5, 0.5, 0.5, 0.5);
             }
         }
     }

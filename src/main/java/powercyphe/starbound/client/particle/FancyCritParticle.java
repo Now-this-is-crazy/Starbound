@@ -1,37 +1,37 @@
 package powercyphe.starbound.client.particle;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particle.SimpleParticleType;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 
-public class FancyCritParticle extends SpriteBillboardParticle {
-    private final SpriteProvider spriteProvider;
+public class FancyCritParticle extends TextureSheetParticle {
+    private final SpriteSet spriteProvider;
 
     private final float baseScale;
     private final float angleMultiplier;
 
-    public FancyCritParticle(ClientWorld clientWorld, double d, double e, double f, double g, double h, double i, SpriteProvider spriteProvider) {
+    public FancyCritParticle(ClientLevel clientWorld, double d, double e, double f, double g, double h, double i, SpriteSet spriteProvider) {
         super(clientWorld, d, e, f, 0.0, 0.0, 0.0);
-        this.velocityMultiplier = 0.7F;
-        this.gravityStrength = 0.5F;
-        this.velocityX *= 0.10000000149011612;
-        this.velocityY *= 0.10000000149011612;
-        this.velocityZ *= 0.10000000149011612;
-        this.velocityX += g * 0.4;
-        this.velocityY += h * 0.4;
-        this.velocityZ += i * 0.4;
+        this.friction = 0.7F;
+        this.gravity = 0.5F;
+        this.xd *= 0.10000000149011612;
+        this.yd *= 0.10000000149011612;
+        this.zd *= 0.10000000149011612;
+        this.xd += g * 0.4;
+        this.yd += h * 0.4;
+        this.zd += i * 0.4;
 
-        this.scale *= 1.5F;
-        this.baseScale = this.scale;
+        this.quadSize *= 1.5F;
+        this.baseScale = this.quadSize;
 
-        this.angle = Random.create().nextBetween(0, 360);
-        this.lastAngle = this.angle;
+        this.roll = RandomSource.create().nextIntBetweenInclusive(0, 360);
+        this.oRoll = this.roll;
         this.angleMultiplier = this.random.nextFloat() * (this.random.nextBoolean() ? 1 : -1);
 
-        this.maxAge = Math.max((int)(10.0 / (Math.random() * 0.8 + 0.6)), 1);
-        this.collidesWithWorld = false;
+        this.lifetime = Math.max((int)(10.0 / (Math.random() * 0.8 + 0.6)), 1);
+        this.hasPhysics = false;
         this.spriteProvider = spriteProvider;
         this.tick();
     }
@@ -40,43 +40,43 @@ public class FancyCritParticle extends SpriteBillboardParticle {
     public void tick() {
         super.tick();
 
-        this.angle = this.lastAngle + this.angleMultiplier * (float) (Math.sin(this.age * 14) * 3);
-        if (this.age++ < this.maxAge) {
-            int faintAge = this.maxAge / 3;
+        this.roll = this.oRoll + this.angleMultiplier * (float) (Math.sin(this.age * 14) * 3);
+        if (this.age++ < this.lifetime) {
+            int faintAge = this.lifetime / 3;
             if (this.age >= faintAge) {
                 float scaleAge = this.age - faintAge - 0.75F;
-                float scaleAgeMax = this.maxAge - faintAge;
-                this.scale = Math.max(this.baseScale * ((scaleAgeMax - scaleAge) / scaleAgeMax), 0.01F);
+                float scaleAgeMax = this.lifetime - faintAge;
+                this.quadSize = Math.max(this.baseScale * ((scaleAgeMax - scaleAge) / scaleAgeMax), 0.01F);
             }
         }
-        this.setSpriteForAge(this.spriteProvider);
+        this.setSpriteFromAge(this.spriteProvider);
     }
 
     @Override
-    protected int getBrightness(float tint) {
+    protected int getLightColor(float tint) {
         return 15728880;
     }
 
     @Override
-    public ParticleTextureSheet getType() {
-        return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT;
+    public ParticleRenderType getRenderType() {
+        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
-    public float getSize(float tickDelta) {
-        return this.scale * MathHelper.clamp(((float)this.age + tickDelta) / (float)this.maxAge * 32.0F, 0.0F, 1.0F);
+    public float getQuadSize(float tickDelta) {
+        return this.quadSize * Mth.clamp(((float)this.age + tickDelta) / (float)this.lifetime * 32.0F, 0.0F, 1.0F);
     }
 
-    public static class Factory implements ParticleFactory<SimpleParticleType> {
-        private final SpriteProvider spriteProvider;
+    public static class Factory implements ParticleProvider<SimpleParticleType> {
+        private final SpriteSet spriteProvider;
 
-        public Factory(SpriteProvider spriteProvider) {
+        public Factory(SpriteSet spriteProvider) {
             this.spriteProvider = spriteProvider;
         }
 
-        public Particle createParticle(SimpleParticleType simpleParticleType, ClientWorld clientWorld, double d, double e, double f, double g, double h, double i) {
+        public Particle createParticle(SimpleParticleType simpleParticleType, ClientLevel clientWorld, double d, double e, double f, double g, double h, double i) {
             FancyCritParticle fancyCritParticle = new FancyCritParticle(clientWorld, d, e, f, g, h, i, this.spriteProvider);
-            fancyCritParticle.setSprite(this.spriteProvider);
+            fancyCritParticle.pickSprite(this.spriteProvider);
             return fancyCritParticle;
         }
     }

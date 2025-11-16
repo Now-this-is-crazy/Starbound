@@ -1,9 +1,9 @@
 package powercyphe.starbound.mixin.client;
 
-import net.minecraft.client.render.entity.EntityRenderer;
-import net.minecraft.client.render.entity.state.EntityRenderState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,16 +15,13 @@ import powercyphe.starbound.client.util.EntityRenderStateAddon;
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin<T extends Entity, S extends EntityRenderState> {
 
-    @Inject(method = "updateRenderState", at = @At("TAIL"))
+    @Inject(method = "extractRenderState", at = @At("TAIL"))
     private void starbound$renderStateAddon(T entity, S state, float tickProgress, CallbackInfo ci) {
         EntityRenderStateAddon stateAddon = (EntityRenderStateAddon) state;
 
-        // UUID
-        stateAddon.starbound$setUUID(entity.getUuid());
-
         if (entity instanceof LivingEntity livingEntity) {
             // Active Item Stack
-            stateAddon.starbound$setActiveStack(livingEntity.getActiveItem());
+            stateAddon.starbound$setActiveStack(livingEntity.getUseItem());
 
             // Starry Invisibility Strength
             StarryInvisibilityComponent starryInvisibilityComponent = StarryInvisibilityComponent.get(livingEntity);

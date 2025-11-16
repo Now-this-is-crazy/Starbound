@@ -1,0 +1,36 @@
+{
+  "parent": "starbound:obtain_starry_gel",
+  "criteria": {
+    "move_in_starry_gel": {
+      "conditions": {
+        "block": "starbound:starry_gel_block"
+      },
+      "trigger": "minecraft:enter_block"
+    },
+    "move_in_starry_gel_layer": {
+      "conditions": {
+        "block": "starbound:starry_gel_layer"
+      },
+      "trigger": "minecraft:enter_block"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.starbound.move_in_starry_gel.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "starbound:starry_gel_block"
+    },
+    "title": {
+      "translate": "advancements.starbound.move_in_starry_gel.title"
+    }
+  },
+  "requirements": [
+    [
+      "move_in_starry_gel",
+      "move_in_starry_gel_layer"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

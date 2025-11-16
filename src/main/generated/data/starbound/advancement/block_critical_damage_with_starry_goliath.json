@@ -1,0 +1,37 @@
+{
+  "parent": "starbound:obtain_starry_gel",
+  "criteria": {
+    "block_critical_damage_with_starry_goliath": {
+      "conditions": {
+        "blockedDamage": 20.0,
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {}
+          }
+        ]
+      },
+      "trigger": "starbound:damage_blocked_with_starry_goliath"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "advancements.starbound.block_critical_damage_with_starry_goliath.description"
+    },
+    "frame": "challenge",
+    "icon": {
+      "count": 1,
+      "id": "starbound:starry_goliath"
+    },
+    "title": {
+      "translate": "advancements.starbound.block_critical_damage_with_starry_goliath.title"
+    }
+  },
+  "requirements": [
+    [
+      "block_critical_damage_with_starry_goliath"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

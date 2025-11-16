@@ -59,6 +59,20 @@
   "death.attack.starry_shard.player": "%1$s got torn apart by %2$s",
   "death.attack.starry_shard.item": "%1$s got torn apart by %2$s using %3$s",
 
+
+  "advancements.starbound.obtain_starry_gel.title": "Starbound",
+  "advancements.starbound.obtain_starry_gel.description": "Sparkles in the void...",
+
+  "advancements.starbound.move_in_starry_gel.title": "Swimming with the stars",
+  "advancements.starbound.move_in_starry_gel.description": "Move around in Starry Gel",
+
+  "advancements.starbound.obtain_starry_spyglass.title": "Through Night and Darkness",
+  "advancements.starbound.obtain_starry_spyglass.description": "Craft an Astral Telescope",
+
+  "advancements.starbound.block_critical_damage_with_starry_goliath.title": "Total Interception",
+  "advancements.starbound.block_critical_damage_with_starry_goliath.description": "Block critical damage using the Starry Goliath's shields",
+
+
   "subtitles.starbound.starry_shield.create": "Starry Shield formed",
   "subtitles.starbound.starry_shield.break": "Starry Shield breaks",
 

@@ -1,27 +1,26 @@
 package powercyphe.starbound.common.network;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import powercyphe.starbound.common.Starbound;
-import powercyphe.starbound.common.registry.ModItems;
-import powercyphe.starbound.common.registry.ModParticles;
+import powercyphe.starbound.common.registry.SBItems;
+import powercyphe.starbound.common.registry.SBParticles;
 
-public record StarryTotemUsePayload(int entityId) implements CustomPayload {
-    public static final Id<StarryTotemUsePayload> ID = new Id<>(Starbound.id("starry_totem_use"));
-    public static final PacketCodec<RegistryByteBuf, StarryTotemUsePayload> CODEC = PacketCodec.tuple(PacketCodecs.INTEGER, StarryTotemUsePayload::entityId, StarryTotemUsePayload::new);
+public record StarryTotemUsePayload(int entityId) implements CustomPacketPayload {
+    public static final Type<StarryTotemUsePayload> ID = new Type<>(Starbound.id("starry_totem_use"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, StarryTotemUsePayload> CODEC = StreamCodec.composite(ByteBufCodecs.INT, StarryTotemUsePayload::entityId, StarryTotemUsePayload::new);
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 
@@ -29,18 +28,18 @@ public record StarryTotemUsePayload(int entityId) implements CustomPayload {
 
         @Override
         public void receive(StarryTotemUsePayload payload, ClientPlayNetworking.Context context) {
-            MinecraftClient client = context.client();
-            PlayerEntity player = context.player();
-            World world = player.getWorld();
+            Minecraft client = context.client();
+            Player player = context.player();
+            Level world = player.level();
 
             int entityId = payload.entityId();
-            Entity entity = world.getEntityById(entityId);
+            Entity entity = world.getEntity(entityId);
             if (entity instanceof LivingEntity livingEntity) {
-                client.particleManager.addEmitter(entity, ModParticles.STARRY_SMOKE, 30);
-                world.playSoundClient(entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_TOTEM_USE, entity.getSoundCategory(), 1.0F, 1.0F, false);
+                client.particleEngine.createTrackingEmitter(entity, SBParticles.STARRY_SMOKE, 30);
+                world.playLocalSound(entity.getX(), entity.getY(), entity.getZ(), SoundEvents.TOTEM_USE, entity.getSoundSource(), 1.0F, 1.0F, false);
 
                 if (livingEntity == player) {
-                    client.gameRenderer.showFloatingItem(ModItems.STARRY_TOTEM.getDefaultStack());
+                    client.gameRenderer.displayItemActivation(SBItems.STARRY_TOTEM.getDefaultInstance());
                 }
             }
         }

@@ -2,9 +2,10 @@ package powercyphe.starbound.common;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.minecraft.util.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import powercyphe.starbound.common.advancement.SBCriteria;
 import powercyphe.starbound.common.network.EmitterParticlePayload;
 import powercyphe.starbound.common.network.StarryChargeSoundPayload;
 import powercyphe.starbound.common.network.StarryTotemUsePayload;
@@ -16,17 +17,19 @@ public class Starbound implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ModItems.init();
-		ModItems.Components.init();
-		ModBlocks.init();
-		ModRecipeSerializers.init();
-		ModEnchantments.init();
-		ModDamageTypes.init();
-		ModSounds.init();
-		ModParticles.init();
-		ModFeatures.init();
+		SBItems.init();
+		SBItems.Components.init();
+		SBBlocks.init();
+		SBRecipeSerializers.init();
+		SBEnchantments.init();
+		SBDamageTypes.init();
+		SBSounds.init();
+		SBParticles.init();
+		SBFeatures.init();
+		SBCriteria.init();
 
 		initNetworking();
+
 	}
 
 	public static void initNetworking() {
@@ -35,8 +38,8 @@ public class Starbound implements ModInitializer {
 		PayloadTypeRegistry.playS2C().register(StarryTotemUsePayload.ID, StarryTotemUsePayload.CODEC);
 	}
 
-	public static Identifier id(String path) {
-		return Identifier.of(MOD_ID, path);
+	public static ResourceLocation id(String path) {
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 }

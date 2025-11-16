@@ -1,34 +1,34 @@
 package powercyphe.starbound.common.network;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleTypes;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.entity.Entity;
 import powercyphe.starbound.common.Starbound;
 
-public record EmitterParticlePayload(int entityId, ParticleEffect particleEffect) implements CustomPayload {
-    public static final Id<EmitterParticlePayload> ID = new Id<>(Starbound.id("emitter_particle"));
-    public static final PacketCodec<RegistryByteBuf, EmitterParticlePayload> CODEC = PacketCodec.tuple(PacketCodecs.INTEGER, EmitterParticlePayload::entityId, ParticleTypes.PACKET_CODEC, EmitterParticlePayload::particleEffect, EmitterParticlePayload::new);
+public record EmitterParticlePayload(int entityId, ParticleOptions particleEffect) implements CustomPacketPayload {
+    public static final Type<EmitterParticlePayload> ID = new Type<>(Starbound.id("emitter_particle"));
+    public static final StreamCodec<RegistryFriendlyByteBuf, EmitterParticlePayload> CODEC = StreamCodec.composite(ByteBufCodecs.INT, EmitterParticlePayload::entityId, ParticleTypes.STREAM_CODEC, EmitterParticlePayload::particleEffect, EmitterParticlePayload::new);
 
     @Override
-    public Id<? extends CustomPayload> getId() {
+    public Type<? extends CustomPacketPayload> type() {
         return ID;
     }
 
     public static class Receiver implements ClientPlayNetworking.PlayPayloadHandler<EmitterParticlePayload> {
         @Override
         public void receive(EmitterParticlePayload candyCritPayload, ClientPlayNetworking.Context context) {
-            MinecraftClient client = MinecraftClient.getInstance();
+            Minecraft client = Minecraft.getInstance();
 
-            if (client != null && client.world != null) {
-                Entity entity = client.world.getEntityById(candyCritPayload.entityId);
+            if (client != null && client.level != null) {
+                Entity entity = client.level.getEntity(candyCritPayload.entityId);
                 if (entity != null) {
-                    client.particleManager.addEmitter(entity, candyCritPayload.particleEffect);
+                    client.particleEngine.createTrackingEmitter(entity, candyCritPayload.particleEffect);
                 }
             }
         }
